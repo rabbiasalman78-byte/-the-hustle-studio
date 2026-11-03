@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hustle Studio</title>
+<style>
+:root {
+  --burgundy: #401b2b;
+  --blush: #f3dde1;
+  --background: #fbf7f5;
+  --text: #281c20;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--background);
+  color: var(--text);
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+
+header {
+  background: var(--burgundy);
+  color: white;
+  padding: 18px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.brand {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+header small {
+  display: block;
+  margin-top: 5px;
+  color: var(--blush);
+  letter-spacing: 2px;
+}
+nav { display: flex; gap: 15px; }
+nav button {
+  background: transparent;
+  color: white;
+  border: 1px solid #d8b6c0;
+  border-radius: 25px;
+  padding: 9px 15px;
+}
+
+.hero {
+  background: linear-gradient(120deg, #401b2b, #754454);
+  color: white;
+  padding: 90px 8%;
+}
+.eyebrow {
+  color: #bd8291;
+  letter-spacing: 3px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.hero .eyebrow { color: var(--blush); }
+h1, h2, h3 { font-family: Georgia, serif; font-weight: normal; }
+h1 { font-size: clamp(42px, 7vw, 75px); max-width: 700px; margin: 20px 0; }
+.hero p { max-width: 550px; line-height: 1.8; color: #f4e7ea; }
+.primary {
+  background: var(--blush);
+  color: var(--burgundy);
+  border: none;
+  padding: 14px 22px;
+  border-radius: 30px;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+section { padding: 55px 7%; }
+.section-title { font-size: 38px; margin: 10px 0; }
+.description { color: #76656a; line-height: 1.7; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 9px; margin: 25px 0; }
+.filter {
+  padding: 9px 15px;
+  border: 1px solid #d9c9cd;
+  border-radius: 25px;
+  background: transparent;
+}
+.filter.active { background: var(--burgundy); color: white; }
+#search {
+  width: 100%;
+  max-width: 450px;
+  padding: 13px;
+  border: 1px solid #d9c9cd;
+  border-radius: 25px;
+  margin-bottom: 20px;
+}
+.notice {
+  background: #f4e8ea;
+  color: #593341;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+.products {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.product {
+  background: white;
+  border: 1px solid #e8dde0;
+  border-radius: 15px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.cover {
+  min-height: 185px;
+  padding: 20px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: white;
+  background: linear-gradient(145deg, #b56f7d, #633344);
+}
+.cover.green { background: linear-gradient(145deg, #536b59, #20392d); }
+.cover.plum { background: linear-gradient(145deg, #57405f, #2a2033); }
+.cover.gold { background: linear-gradient(145deg, #9b7650, #493422); }
+.cover small { display: block; letter-spacing: 2px; margin-bottom: 12px; }
+.cover strong { font: 24px Georgia, serif; }
+.product-info { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+.product-info h3 { font-size: 21px; margin: 0 0 10px; }
+.product-info p { color: #76656a; line-height: 1.6; font-size: 14px; flex: 1; }
+.product-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.add {
+  background: var(--burgundy);
+  color: white;
+  border: 0;
+  border-radius: 25px;
+  padding: 10px 13px;
+}
+
+.about { background: var(--blush); }
+.about-box {
+  background: #ffffff88;
+  padding: 25px;
+  border-radius: 15px;
+  line-height: 1.8;
+  margin-top: 20px;
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 25px;
+}
+.info-card {
+  background: white;
+  padding: 22px;
+  border: 1px solid #e8dde0;
+  border-radius: 15px;
+}
+.info-card p { color: #76656a; line-height: 1.6; }
+
+footer {
+  background: #28141e;
+  color: white;
+  padding: 35px 7%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+footer a { color: white; }
+
+.backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #0007;
+  z-index: 4;
+}
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(420px, 92vw);
+  height: 100%;
+  background: white;
+  padding: 24px;
+  z-index: 5;
+  transform: translateX(105%);
+  transition: .25s;
+  display: flex;
+  flex-direction: column;
+}
+.drawer.open { transform: translateX(0); }
+.backdrop.open { display: block; }
+.drawer-head, .cart-line, .cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.drawer-head h2 { margin: 0; }
+.close { border: 0; background: none; font-size: 28px; }
+#cart-items { flex: 1; overflow: auto; padding: 20px 0; }
+.cart-line { padding: 14px 0; border-bottom: 1px solid #e8dde0; }
+.cart-controls { display: flex; gap: 7px; align-items: center; margin-top: 9px; }
+.cart-controls button {
+  background: white;
+  border: 1px solid #d9c9cd;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.remove { color: #a04c62; }
+.checkout {
+  width: 100%;
+  background: var(--burgundy);
+  color: white;
+  border: 0;
+  padding: 14px;
+  border-radius: 25px;
+  margin-top: 15px;
+}
+.small-note { font-size: 12px; color: #76656a; line-height: 1.5; }
+
+@media(max-width: 800px) {
+  .products { grid-template-columns: repeat(2, 1fr); }
+  .info-grid { grid-template-columns: 1fr; }
+}
+@media(max-width: 540px) {
+  .products { grid-template-columns: 1fr; }
+  .hero { padding: 60px 7%; }
+  section { padding: 40px 6%; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div>
+    <div class="brand">THE HUSTLE STUDIO</div>
+    <small>DIGITAL GOODS FOR BIG IDEAS</small>
+  </div>
+  <nav>
+    <button onclick="document.getElementById('shop').scrollIntoView()">Shop</button>
+    <button onclick="openCart()">Bag (<span id="cart-count">0</span>)</button>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow">IDEAS DESERVE GOOD TOOLS</div>
+    <h1>Make room for your next big idea.</h1>
+    <p>Practical digital guides, thoughtful templates and creative resources to help you learn, plan and build with confidence.</p>
+    <button class="primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Explore the collection →</button>
+  </section>
+
+  <section id="shop">
+    <div class="eyebrow">THE DIGITAL SHOP</div>
+    <h2 class="section-title">Find your next tool.</h2>
+    <p class="description">A growing collection for creators, learners and small businesses.</p>
+
+    <div class="filters" id="filters">
+      <button class="filter active" data-filter="All">All</button>
+      <button class="filter" data-filter="Ebooks">Ebooks</button>
+      <button class="filter" data-filter="Templates">Templates</button>
+      <button class="filter" data-filter="Business">Business</button>
+      <button class="filter" data-filter="Planners">Planners</button>
+      <button class="filter" data-filter="Spreadsheets">Spreadsheets</button>
+      <button class="filter" data-filter="Prompt Packs">Prompt Packs</button>
+      <button class="filter" data-filter="Courses">Courses</button>
+    </div>
+
+    <input id="search" type="search" placeholder="Search products...">
+
+    <div class="notice">
+      These are sample catalogue items and prices. We will update them with your actual products and confirmed prices before launch.
+    </div>
+
+    <div class="products" id="products"></div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="eyebrow">OUR STORY</div>
+    <h2 class="section-title">Built for people who turn ideas into action.</h2>
+    <p class="description">The Hustle Studio brings useful digital resources together in one place. Explore at your own pace, choose what helps, and keep creating.</p>
+    <div class="about-box">
+      <strong>Our promise</strong><br>
+      Clear resources. Useful design. No unnecessary complexity.
+      <br><br>
+      <strong>Made for:</strong><br>
+      Creators · Students · Entrepreneurs · Small businesses
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">HOW IT WORKS</div>
+    <h2 class="section-title">Simple, useful, digital.</h2>
+    <div class="info-grid">
+      <article class="info-card"><h3>01. Explore</h3><p>Browse ebooks, templates, planners and practical business resources.</p></article>
+      <article class="info-card"><h3>02. Choose</h3><p>Add the resources you want to your bag and review your selections.</p></article>
+      <article class="info-card"><h3>03. Receive</h3><p>Digital delivery will be connected when the real checkout system is ready.</p></article>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div><strong class="brand">THE HUSTLE STUDIO</strong><p>Build. Create. Grow.</p></div>
+  <div><a href="#shop">Shop</a> · <a href="#about">Our story</a></div>
+  <p class="small-note">Preview storefront. Payments and automatic downloads are not active yet.</p>
+</footer>
+
+<div class="backdrop" id="backdrop" onclick="closeCart()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h2>Your bag</h2>
+    <button class="close" onclick="closeCart()">×</button>
+  </div>
+  <div id="cart-items"></div>
+  <div>
+    <div class="cart-total"><strong>Subtotal</strong><strong id="subtotal">PKR 0</strong></div>
+    <button class="checkout" onclick="demoCheckout()">Continue to checkout</button>
+    <p class="small-note">Demo only. This website does not collect payments yet.</p>
+  </div>
+</aside>
+
+<script>
+const products = [
+ {id:1,title:'Mastering Personal Branding',category:'Ebooks',description:'A practical guide to building a clear, memorable personal brand.',price:1200,style:'',label:'PERSONAL BRANDING'},
+ {id:2,title:'AI-Powered Content Solopreneur',category:'Ebooks',description:'Plan and create content systems with AI tools.',price:1500,style:'gold',label:'CONTENT SYSTEMS'},
+ {id:3,title:'Micro-SaaS & No-Code Launchpad',category:'Business',description:'Explore ideas and map a no-code product launch.',price:1800,style:'green',label:'BUILD YOUR IDEA'},
+ {id:4,title:'Small Business Social Media Kit',category:'Templates',description:'Editable social media planning and design templates.',price:950,style:'plum',label:'SOCIAL MEDIA KIT'},
+ {id:5,title:'The Art of Prompt Writing',category:'Ebooks',description:'Learn to write clearer prompts for AI tools.',price:700,style:'plum',label:'PROMPT WRITING'},
+ {id:6,title:'Weekly Focus Planner',category:'Planners',description:'A simple weekly planning system.',price:450,style:'green',label:'PLAN WITH PURPOSE'},
+ {id:7,title:'Creator Finance Tracker',category:'Spreadsheets',description:'Track income, expenses and project costs.',price:650,style:'green',label:'MONEY TRACKER'},
+ {id:8,title:'Small Business Prompt Pack',category:'Prompt Packs',description:'Prompts for product descriptions and content.',price:550,style:'gold',label:'PROMPT COLLECTION'},
+ {id:9,title:'Canva Content Calendar',category:'Templates',description:'Plan a month of posts with an editable calendar.',price:500,style:'',label:'CONTENT CALENDAR'},
+ {id:10,title:'Start Your Digital Shop',category:'Courses',description:'A short learning resource for planning a digital shop.',price:1100,style:'plum',label:'DIGITAL SHOP STARTER'}
+];
+
+let cart = [];
+let activeFilter = 'All';
+const money = amount => 'PKR ' + amount.toLocaleString('en-PK');
+
+function renderProducts() {
+  const term = document.getElementById('search').value.trim().toLowerCase();
+  const shown = products.filter(p =>
+    (activeFilter === 'All' || p.category === activeFilter) &&
+    (!term || (p.title + ' ' + p.description + ' ' + p.category).toLowerCase().includes(term))
+  );
+
+  document.getElementById('products').innerHTML = shown.length
+    ? shown.map(p => `
+      <article class="product">
+        <div class="cover ${p.style}">
+          <div><small>THE HUSTLE STUDIO</small><strong>${p.label}</strong></div>
+        </div>
+        <div class="product-info">
+          <h3>${p.title}</h3>
+          <p>${p.description}</p>
+          <div class="product-bottom">
+            <strong>${money(p.price)}</strong>
+            <button class="add" onclick="addToCart(${p.id})">Add to bag +</button>
+          </div>
+        </div>
+      </article>`).join('')
+    : '<p class="description">No products found. Try another search.</p>';
+}
+
+document.getElementById('filters').addEventListener('click', event => {
+  const button = event.target.closest('[data-filter]');
+  if (!button) return;
+  activeFilter = button.dataset.filter;
+  document.querySelectorAll('.filter').forEach(b =>
+    b.classList.toggle('active', b === button)
+  );
+  renderProducts();
+});
+
+document.getElementById('search').addEventListener('input', renderProducts);
+
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  const existing = cart.find(p => p.id === id);
+  if (existing) existing.qty++;
+  else cart.push({...product, qty:1});
+  renderCart();
+}
+
+function renderCart() {
+  document.getElementById('cart-count').textContent =
+    cart.reduce((sum, item) => sum + item.qty, 0);
+
+  document.getElementById('cart-items').innerHTML = cart.length
+    ? cart.map(item => `
+      <div class="cart-line">
+        <div>
+          <strong>${item.title}</strong>
+          <div class="cart-controls">
+            <button onclick="changeQty(${item.id},-1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="changeQty(${item.id},1)">+</button>
+            <button class="remove" onclick="removeItem(${item.id})">Remove</button>
+          </div>
+        </div>
+        <strong>${money(item.price * item.qty)}</strong>
+      </div>`).join('')
+    : '<p class="description">Your bag is empty. Explore the shop to add something.</p>';
+
+  document.getElementById('subtotal').textContent =
+    money(cart.reduce((sum, item) => sum + item.price * item.qty, 0));
+}
+
+function changeQty(id, amount) {
+  const item = cart.find(p => p.id === id);
+  if (!item) return;
+  item.qty += amount;
+  if (item.qty <= 0) removeItem(id);
+  else renderCart();
+}
+
+function removeItem(id) {
+  cart = cart.filter(p => p.id !== id);
+  renderCart();
+}
+
+function openCart() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('backdrop').classList.add('open');
+}
+
+function closeCart() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('backdrop').classList.remove('open');
+}
+
+function demoCheckout() {
+  alert('Checkout is not connected yet. No payments can be made on this preview.');
+}
+
+renderProducts();
+renderCart();
+</script>
+</body>
+</html>
