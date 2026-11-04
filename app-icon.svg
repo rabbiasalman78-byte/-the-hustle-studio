@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="112" fill="#4A0715"/>
+<rect x="38" y="38" width="436" height="436" rx="88" fill="none" stroke="#F3DDE1" stroke-width="8"/>
+<path d="M150 150h212M150 205h212M150 260h140" stroke="#F3DDE1" stroke-width="18" stroke-linecap="round"/>
+<text x="256" y="375" text-anchor="middle" font-family="Georgia,serif" font-size="92" font-weight="bold" fill="#FFF8F6">HS</text>
+</svg>
