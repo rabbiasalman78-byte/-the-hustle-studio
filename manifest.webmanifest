@@ -2,7 +2,7 @@
   "id": "./",
   "name": "The Hustle Studio",
   "short_name": "Hustle Studio",
-  "description": "Explore digital guides, templates and creative resources from The Hustle Studio.",
+  "description": "Thoughtful digital guides, templates and tools from The Hustle Studio.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
