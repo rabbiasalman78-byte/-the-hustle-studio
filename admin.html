@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hustle Studio | Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#faf3f3;color:#39242b;font-family:Arial,sans-serif}
+header{background:#6b1f2e;color:white;padding:22px 7%;display:flex;justify-content:space-between;align-items:center}
+main{max-width:1000px;margin:35px auto;padding:20px}
+h1,h2{color:#6b1f2e}
+.panel{background:white;padding:24px;border-radius:12px;margin:20px 0;box-shadow:0 3px 15px #0000000c}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 15px;border:1px solid #ddc6cb;border-radius:7px;font:inherit}
+textarea{min-height:90px}
+button{background:#6b1f2e;color:white;border:0;padding:12px 18px;border-radius:7px;cursor:pointer;margin:5px 4px 5px 0}
+button.secondary{background:#c9808a}
+button.danger{background:#9d3030}
+.hidden{display:none}
+.product{border-bottom:1px solid #eee;padding:15px 0;display:flex;gap:15px;align-items:center;flex-wrap:wrap}
+.product img{width:75px;height:75px;object-fit:cover;border-radius:7px}
+.small{font-size:13px;color:#765e65}
+#message{padding:12px;color:#6b1f2e}
+</style>
+</head>
+<body>
+
+<header>
+  <strong>The Hustle Studio — Admin</strong>
+  <button id="logout" class="hidden">Log out</button>
+</header>
+
+<main>
+  <div id="login" class="panel">
+    <h1>Admin Login</h1>
+    <p>Sign in to manage your store.</p>
+    <label>Email</label>
+    <input id="email" type="email" placeholder="Your admin email">
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Your password">
+    <button id="loginBtn">Sign in</button>
+  </div>
+
+  <div id="dashboard" class="hidden">
+    <h1>Store Dashboard</h1>
+    <p>Manage your digital products here.</p>
+
+    <div class="panel">
+      <h2 id="formTitle">Add a Product</h2>
+      <input id="editId" type="hidden">
+
+      <label>Product name</label>
+      <input id="title" placeholder="Example: Mastering Personal Branding">
+
+      <label>Product description</label>
+      <textarea id="description" placeholder="Describe your product"></textarea>
+
+      <label>Price (PKR)</label>
+      <input id="price" type="number" min="0" step="0.01" placeholder="e.g. 500">
+
+      <label>Category</label>
+      <select id="category">
+        <option>Ebooks</option>
+        <option>Templates</option>
+        <option>Business</option>
+        <option>Planners</option>
+        <option>Spreadsheets</option>
+        <option>Prompt Packs</option>
+        <option>Courses</option>
+        <option>Other</option>
+      </select>
+
+      <label>Preview image</label>
+      <input id="preview" type="file" accept="image/*">
+
+      <label>Digital product PDF</label>
+      <input id="file" type="file" accept=".pdf">
+
+      <label><input id="published" type="checkbox" style="width:auto"> Publish product on storefront</label>
+      <br>
+      <button id="saveBtn">Save Product</button>
+      <button id="cancelBtn" class="secondary hidden">Cancel Edit</button>
+      <p class="small">PDF files are stored in a private bucket. Preview images are public.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Your Products</h2>
+      <div id="products">Loading products...</div>
+    </div>
+
+    <div class="panel">
+      <h2>Customer Orders</h2>
+      <div id="orders">Loading orders...</div>
+      <p class="small">Orders will appear here once checkout is connected.</p>
+    </div>
+  </div>
+
+  <p id="message"></p>
+</main>
+
+<script>
+const SUPABASE_URL = "https://pzzrinhxncbnpnbugool.supabase.co";
+const SUPABASE_KEY = "sb_publishable_14PkcdsbhVWyugftJMJKKw_C4vEmuiz";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const $ = id => document.getElementById(id);
+const message = text => $("message").textContent = text;
+
+let currentProducts = [];
+
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+async function checkAdmin() {
+  const { data: { session } } = await db.auth.getSession();
+
+  if (!session) {
+    $("login").classList.remove("hidden");
+    $("dashboard").classList.add("hidden");
+    $("logout").classList.add("hidden");
+    return;
+  }
+
+  const { data, error } = await db.rpc("is_store_admin");
+
+  if (error || data !== true) {
+    await db.auth.signOut();
+    message("This account does not have store administrator access.");
+    return;
+  }
+
+  $("login").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
+  $("logout").classList.remove("hidden");
+  message("Welcome to your store dashboard.");
+  loadProducts();
+  loadOrders();
+}
+
+$("loginBtn").onclick = async () => {
+  message("Signing in...");
+  const { error } = await db.auth.signInWithPassword({
+    email: $("email").value.trim(),
+    password: $("password").value
+  });
+  if (error) return message(error.message);
+  await checkAdmin();
+};
+
+$("logout").onclick = async () => {
+  await db.auth.signOut();
+  location.reload();
+};
+
+async function uploadFile(file, bucket) {
+  const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const path = Date.now() + "-" + crypto.randomUUID() + "-" + cleanName;
+
+  const { error } = await db.storage.from(bucket).upload(path, file);
+  if (error) throw error;
+
+  return path;
+}
+
+$("saveBtn").onclick = async () => {
+  try {
+    const title = $("title").value.trim();
+    const price = Number($("price").value);
+
+    if (!title || $("price").value === "" || !Number.isFinite(price) || price < 0) {
+      return message("Enter a product name and a valid price.");
+    }
+
+    $("saveBtn").disabled = true;
+    message("Saving product...");
+
+    const editId = $("editId").value;
+    let previewImage = currentProducts.find(p => p.id === editId)?.preview_image || null;
+    let filePath = currentProducts.find(p => p.id === editId)?.file_path || null;
+
+    const previewFile = $("preview").files[0];
+    const pdfFile = $("file").files[0];
+
+    if (previewFile) {
+      previewImage = await uploadFile(previewFile, "product-previews");
+      previewImage = db.storage.from("product-previews").getPublicUrl(previewImage).data.publicUrl;
+    }
+
+    if (pdfFile) {
+      if (pdfFile.type !== "application/pdf") throw new Error("Please upload a PDF file.");
+      filePath = await uploadFile(pdfFile, "digital-products");
+    }
+
+    const slug = title.toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") + "-" + (editId || crypto.randomUUID().slice(0,8));
+
+    const product = {
+      title,
+      slug,
+      description: $("description").value.trim(),
+      price,
+      currency: "PKR",
+      category: $("category").value,
+      preview_image: previewImage,
+      file_path: filePath,
+      published: $("published").checked
+    };
+
+    let result;
+    if (editId) {
+      result = await db.from("products").update(product).eq("id", editId);
+    } else {
+      result = await db.from("products").insert(product);
+    }
+
+    if (result.error) throw result.error;
+
+    message("Product saved successfully!");
+    resetForm();
+    await loadProducts();
+  } catch (error) {
+    message("Error: " + error.message);
+  } finally {
+    $("saveBtn").disabled = false;
+  }
+};
+
+async function loadProducts() {
+  const { data, error } = await db.from("products").select("*").order("created_at", {ascending:false});
+
+  if (error) {
+    $("products").textContent = error.message;
+    return;
+  }
+
+  currentProducts = data || [];
+
+  if (!currentProducts.length) {
+    $("products").textContent = "No products yet. Add your first product above!";
+    return;
+  }
+
+  $("products").innerHTML = currentProducts.map(p => `
+    <div class="product">
+      ${p.preview_image ? `<img src="${safe(p.preview_image)}" alt="">` : ""}
+      <div style="flex:1;min-width:150px">
+        <strong>${safe(p.title)}</strong>
+        <div class="small">${safe(p.category)} · PKR ${safe(p.price)} · ${p.published ? "Published" : "Draft"}</div>
+      </div>
+      <button class="secondary" onclick="editProduct('${p.id}')">Edit</button>
+      <button class="danger" onclick="deleteProduct('${p.id}')">Delete</button>
+    </div>
+  `).join("");
+}
+
+window.editProduct = id => {
+  const p = currentProducts.find(item => item.id === id);
+  if (!p) return;
+
+  $("editId").value = p.id;
+  $("title").value = p.title;
+  $("description").value = p.description || "";
+  $("price").value = p.price;
+  $("category").value = p.category || "Other";
+  $("published").checked = p.published;
+  $("formTitle").textContent = "Edit Product";
+  $("saveBtn").textContent = "Update Product";
+  $("cancelBtn").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+
+window.deleteProduct = async id => {
+  if (!confirm("Delete this product from your store?")) return;
+
+  const { error } = await db.from("products").delete().eq("id", id);
+  if (error) return message(error.message);
+
+  message("Product deleted.");
+  await loadProducts();
+};
+
+function resetForm() {
+  ["editId","title","description","price"].forEach(id => $(id).value = "");
+  $("preview").value = "";
+  $("file").value = "";
+  $("published").checked = false;
+  $("formTitle").textContent = "Add a Product";
+  $("saveBtn").textContent = "Save Product";
+  $("cancelBtn").classList.add("hidden");
+}
+
+$("cancelBtn").onclick = resetForm;
+
+async function loadOrders() {
+  const { data, error } = await db.from("orders").select("*").order("created_at", {ascending:false});
+  if (error) {
+    $("orders").textContent = error.message;
+    return;
+  }
+
+  if (!data.length) {
+    $("orders").textContent = "No orders yet.";
+    return;
+  }
+
+  $("orders").innerHTML = data.map(o => `
+    <div class="product">
+      <div>
+        <strong>${safe(o.customer_name || "Customer")}</strong>
+        <div class="small">${safe(o.customer_email || "")} · PKR ${safe(o.total_amount)} · ${safe(o.status)}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+checkAdmin();
+</script>
+</body>
+</html>
