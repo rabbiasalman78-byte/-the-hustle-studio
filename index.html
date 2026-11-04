@@ -435,8 +435,6 @@ function renderCart() {
     money(cart.reduce((sum, item) => sum + item.price * item.qty, 0));
 }
 
-}
-
 function changeQty(id, amount) {
   const item = cart.find(p => p.id === id);
   if (!item) return;
