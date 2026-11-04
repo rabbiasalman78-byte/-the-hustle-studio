@@ -357,6 +357,8 @@ const db = window.supabase.createClient(
   "https://pzzrinhxncbnpnbugool.supabase.co",
   "sb_publishable_14PkcdsbhVWyugftJMJKKw_C4vEmuiz"
 );
+async function loadStoreSettings(){const result=await db.from("store_settings").select("settings").eq("id",1).maybeSingle();if(!result.error&&result.data&&result.data.settings)applyStoreSettings(result.data.settings);}
+loadStoreSettings();
 
 let products = [];
 let cart = [];
