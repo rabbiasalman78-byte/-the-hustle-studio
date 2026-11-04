@@ -26,3 +26,7 @@ grant insert, update, delete on public.store_settings to authenticated;
 insert into public.store_settings (id, settings)
 values (1, '{}'::jsonb)
 on conflict (id) do nothing;
+
+
+-- Public sample PDFs are stored as URLs on each product.
+alter table public.products add column if not exists sample_pdf_url text;
