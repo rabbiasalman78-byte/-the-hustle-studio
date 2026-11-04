@@ -178,7 +178,7 @@ footer {
   gap: 20px;
 }
 footer a { color: white; }
-.sample-backdrop{display:none;position:fixed;inset:0;background:#16070dcc;z-index:30}.sample-backdrop.open{display:block}.sample-modal{display:none;position:fixed;z-index:31;inset:3vh 3vw;background:white;border-radius:16px;overflow:hidden;flex-direction:column;box-shadow:0 15px 60px #0005}.sample-modal.open{display:flex}.sample-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #ead8dc;color:#401b2b}.sample-head p{margin:3px 0 0;font-size:12px;color:#76656a}.sample-modal iframe{border:0;width:100%;flex:1;min-height:0}@media(max-width:600px){.sample-modal{inset:1vh 1vw;border-radius:10px}}
+.sample-backdrop{display:none;position:fixed;inset:0;background:#16070dcc;z-index:80}.sample-backdrop.open{display:block}.sample-modal{display:none;position:fixed;z-index:81;inset:3vh 3vw;background:#fffdfc;border:1px solid #ead8dc;border-radius:18px;overflow:hidden;flex-direction:column;box-shadow:0 18px 70px #16070d66}.sample-modal.open{display:flex}.sample-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid #ead8dc;color:#401b2b}.sample-head p{margin:3px 0 0;font-size:12px;color:#76656a}.sample-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 14px;background:#fbf5f5;border-bottom:1px solid #ead8dc;font-size:12px;color:#76545e}.sample-tools a{color:#401b2b;font-weight:700}.sample-modal iframe{border:0;width:100%;flex:1;min-height:220px;background:#f5eeee}@media(max-width:600px){.sample-modal{inset:1vh 1vw;border-radius:10px}.sample-head{padding:10px 12px}}
 
 .backdrop {
   display: none;
@@ -335,7 +335,7 @@ footer a { color: white; }
   <p class="small-note">Preview storefront. Payments and automatic downloads are not active yet.</p>
 </footer>
 
-<div class="sample-backdrop" id="sampleBackdrop" onclick="closeSample()"></div><section class="sample-modal" id="sampleModal" aria-label="Product sample"><div class="sample-head"><div><strong id="sampleTitle">Product sample</strong><p>Preview pages</p></div><button class="close" onclick="closeSample()" aria-label="Close sample">×</button></div><iframe id="sampleFrame" title="PDF sample pages"></iframe></section>
+<div class="sample-backdrop" id="sampleBackdrop" onclick="if(event.target===this)closeSample()"></div><section class="sample-modal" id="sampleModal" role="dialog" aria-modal="true" aria-label="Product sample"><div class="sample-head"><div><strong id="sampleTitle">Product sample</strong><p>Preview pages from this digital product</p></div><button class="close" type="button" onclick="closeSample()" aria-label="Close sample">×</button></div><div class="sample-tools"><span id="sampleStatus" role="status">Loading sample preview…</span><a id="sampleOpenTab" href="#" target="_blank" rel="noopener noreferrer">Open PDF in a new tab ↗</a></div><iframe id="sampleFrame" title="PDF sample pages" loading="eager"></iframe></section>
 <div class="account-backdrop" id="accountBackdrop" onclick="if(event.target===this)closeAccount()"><section class="account-panel" role="dialog" aria-modal="true" aria-labelledby="accountHeading"><div class="account-top"><div><div class="eyebrow">THE HUSTLE STUDIO</div><h2 id="accountHeading">Your account</h2></div><button class="account-close" onclick="closeAccount()" aria-label="Close">×</button></div><div id="accountAuthView"><div class="account-tabs"><button id="signInTab" class="active" onclick="setAccountMode('signin')">Sign in</button><button id="signUpTab" onclick="setAccountMode('signup')">Create account</button></div><div id="accountNameWrap" class="account-field" style="display:none"><span>Your name</span><input id="accountName" type="text" autocomplete="name" placeholder="Your name"></div><label class="account-field"><span>Email address</span><input id="accountEmail" type="email" autocomplete="email" placeholder="you@example.com"></label><label class="account-field"><span>Password</span><input id="accountPassword" type="password" autocomplete="current-password" placeholder="Enter your password"></label><button class="account-submit" id="accountSubmit" onclick="submitAccount()">Sign in</button><div id="accountMessage" class="account-message" style="display:none"></div><p class="small-note">Creating an account gives you a customer profile. Seller access is reserved for the store owner.</p></div><div id="accountProfileView" style="display:none"><div class="account-profile"><div class="account-avatar" id="accountAvatar">H</div><div><strong id="profileDisplayName">Welcome</strong><div class="small-note" id="profileEmail"></div><span class="small-note" id="profileRole">Customer account</span></div></div><label class="account-field"><span>Display name</span><input id="profileNameInput" type="text" autocomplete="name" placeholder="Your name"></label><div class="account-actions"><button onclick="saveAccountProfile()">Save profile</button><a class="seller-link" id="sellerDashboardLink" href="./admin.html" style="display:none">Open Seller Dashboard ↗</a><button onclick="accountSignOut()">Sign out</button></div><div id="profileMessage" class="account-message" style="display:none"></div><p class="small-note">Order history and secure digital downloads will appear here after checkout is connected.</p></div></section></div>
 <div class="detail-backdrop" id="detailBackdrop" onclick="if(event.target===this)closeProduct()"><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="detail-image" id="detailImage"></div><div class="detail-copy"><button class="detail-close" onclick="closeProduct()" aria-label="Close">×</button><div class="eyebrow" id="detailCategory">DIGITAL RESOURCE</div><h2 id="detailTitle">Product title</h2><p id="detailDescription"></p><div class="detail-price" id="detailPrice"></div><div class="detail-actions"><button id="detailSampleButton" class="sample-action" style="display:none" onclick="openSampleFromDetail()">Read sample</button><button id="detailAddButton" onclick="addCurrentProductToCart()">Add to bag +</button></div></div></section></div>
 <div class="backdrop" id="backdrop" onclick="closeCart()"></div>
@@ -454,8 +454,33 @@ function closeProduct(){document.getElementById("detailBackdrop").classList.remo
 function openSampleFromDetail(){const id=activeDetailProductId;if(!id)return;closeProduct();openSample(id);}
 function addCurrentProductToCart(){if(activeDetailProductId)addToCart(activeDetailProductId);closeProduct();openCart();}
 
-function openSample(id){const p=products.find(x=>x.id===id);if(!p||!p.sample_pdf_url)return;document.getElementById('sampleTitle').textContent=p.title+' — Sample';document.getElementById('sampleFrame').src=p.sample_pdf_url+'#toolbar=1&navpanes=0';document.getElementById('sampleBackdrop').classList.add('open');document.getElementById('sampleModal').classList.add('open');document.body.style.overflow='hidden';}
-function closeSample(){document.getElementById('sampleBackdrop').classList.remove('open');document.getElementById('sampleModal').classList.remove('open');document.getElementById('sampleFrame').src='about:blank';document.body.style.overflow='';}
+function openSample(id){
+  const p=products.find(x=>String(x.id)===String(id));
+  if(!p){console.error("Sample product not found",id);return;}
+  if(!p.sample_pdf_url){alert("A sample PDF has not been uploaded for this product yet.");return;}
+  const url=String(p.sample_pdf_url).trim();
+  if(!/^https:\/\//i.test(url)){alert("The sample PDF link is not valid. Please contact the store owner.");console.error("Invalid sample PDF URL",url);return;}
+  const frame=document.getElementById("sampleFrame");
+  document.getElementById("sampleTitle").textContent=p.title+" — Sample";
+  document.getElementById("sampleStatus").textContent="If the preview does not load here, use Open PDF in a new tab.";
+  document.getElementById("sampleOpenTab").href=url;
+  document.getElementById("sampleBackdrop").classList.add("open");
+  document.getElementById("sampleModal").classList.add("open");
+  document.body.style.overflow="hidden";
+  frame.src="about:blank";
+  requestAnimationFrame(()=>{frame.src=url+(url.includes("#")?"&":"#")+"toolbar=1&navpanes=0";});
+}
+function closeSample(){
+  document.getElementById("sampleBackdrop").classList.remove("open");
+  document.getElementById("sampleModal").classList.remove("open");
+  document.getElementById("sampleFrame").src="about:blank";
+  document.getElementById("sampleOpenTab").href="#";
+  document.body.style.overflow="";
+}
+document.getElementById("sampleFrame").addEventListener("load",()=>{
+  const status=document.getElementById("sampleStatus");
+  if(status&&document.getElementById("sampleModal").classList.contains("open"))status.textContent="Viewer loaded. If the PDF area stays blank, open it in a new tab.";
+});
 function addToCart(id) {
   const product = products.find(p => p.id === id);
   const existing = cart.find(p => p.id === id);
