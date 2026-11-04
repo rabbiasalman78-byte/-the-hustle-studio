@@ -178,6 +178,7 @@ footer {
   gap: 20px;
 }
 footer a { color: white; }
+.sample-backdrop{display:none;position:fixed;inset:0;background:#16070dcc;z-index:30}.sample-backdrop.open{display:block}.sample-modal{display:none;position:fixed;z-index:31;inset:3vh 3vw;background:white;border-radius:16px;overflow:hidden;flex-direction:column;box-shadow:0 15px 60px #0005}.sample-modal.open{display:flex}.sample-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #ead8dc;color:#401b2b}.sample-head p{margin:3px 0 0;font-size:12px;color:#76656a}.sample-modal iframe{border:0;width:100%;flex:1;min-height:0}@media(max-width:600px){.sample-modal{inset:1vh 1vw;border-radius:10px}}
 
 .backdrop {
   display: none;
@@ -318,6 +319,7 @@ footer a { color: white; }
   <p class="small-note">Preview storefront. Payments and automatic downloads are not active yet.</p>
 </footer>
 
+<div class="sample-backdrop" id="sampleBackdrop" onclick="closeSample()"></div><section class="sample-modal" id="sampleModal" aria-label="Product sample"><div class="sample-head"><div><strong id="sampleTitle">Product sample</strong><p>Preview pages</p></div><button class="close" onclick="closeSample()" aria-label="Close sample">×</button></div><iframe id="sampleFrame" title="PDF sample pages"></iframe></section>
 <div class="backdrop" id="backdrop" onclick="closeCart()"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
@@ -376,7 +378,7 @@ async function loadProducts() {
 
   const { data, error } = await db
     .from('products')
-    .select('id,title,category,description,price,preview_image,published')
+    .select('id,title,category,description,price,preview_image,sample_pdf_url,published')
     .eq('published', true)
     .order('created_at', { ascending: false });
 
@@ -409,7 +411,7 @@ function renderProducts() {
           <p>${escapeHTML(p.description || '')}</p>
           <div class="product-bottom">
             <strong>${money(Number(p.price) || 0)}</strong>
-            <button class="add" onclick="addToCart('${p.id}')">Add to bag +</button>
+            ${p.sample_pdf_url ? `<button class="add" style="background:#f3dde1;color:#401b2b" onclick="openSample('${p.id}')">Read sample</button>` : ''}<button class="add" onclick="addToCart('${p.id}')">Add to bag +</button>
           </div>
         </div>
       </article>`).join('')
@@ -428,6 +430,8 @@ document.getElementById('filters').addEventListener('click', event => {
 
 document.getElementById('search').addEventListener('input', renderProducts);
 
+function openSample(id){const p=products.find(x=>x.id===id);if(!p||!p.sample_pdf_url)return;document.getElementById('sampleTitle').textContent=p.title+' — Sample';document.getElementById('sampleFrame').src=p.sample_pdf_url+'#toolbar=1&navpanes=0';document.getElementById('sampleBackdrop').classList.add('open');document.getElementById('sampleModal').classList.add('open');document.body.style.overflow='hidden';}
+function closeSample(){document.getElementById('sampleBackdrop').classList.remove('open');document.getElementById('sampleModal').classList.remove('open');document.getElementById('sampleFrame').src='about:blank';document.body.style.overflow='';}
 function addToCart(id) {
   const product = products.find(p => p.id === id);
   const existing = cart.find(p => p.id === id);
