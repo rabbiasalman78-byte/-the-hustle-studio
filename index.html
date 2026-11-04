@@ -411,7 +411,6 @@ function addToCart(id) {
   else cart.push({...product, qty:1});
   renderCart();
 }
-
 function renderCart() {
   document.getElementById('cart-count').textContent =
     cart.reduce((sum, item) => sum + item.qty, 0);
@@ -420,12 +419,12 @@ function renderCart() {
     ? cart.map(item => `
       <div class="cart-line">
         <div>
-          <strong>${item.title}</strong>
+          <strong>${escapeHTML(item.title)}</strong>
           <div class="cart-controls">
-            <button onclick="changeQty(${item.id},-1)">−</button>
+            <button onclick="changeQty('${escapeHTML(item.id)}',-1)">−</button>
             <span>${item.qty}</span>
-            <button onclick="changeQty(${item.id},1)">+</button>
-            <button class="remove" onclick="removeItem(${item.id})">Remove</button>
+            <button onclick="changeQty('${escapeHTML(item.id)}',1)">+</button>
+            <button class="remove" onclick="removeItem('${escapeHTML(item.id)}')">Remove</button>
           </div>
         </div>
         <strong>${money(item.price * item.qty)}</strong>
@@ -434,6 +433,8 @@ function renderCart() {
 
   document.getElementById('subtotal').textContent =
     money(cart.reduce((sum, item) => sum + item.price * item.qty, 0));
+}
+
 }
 
 function changeQty(id, amount) {
