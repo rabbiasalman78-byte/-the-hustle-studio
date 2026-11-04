@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>The Hustle Studio</title>
 <style>
 :root {
@@ -279,7 +280,7 @@ footer a { color: white; }
     <input id="search" type="search" placeholder="Search products...">
 
     <div class="notice">
-      These are sample catalogue items and prices. We will update them with your actual products and confirmed prices before launch.
+      Browse our currently available digital products. New products will appear here when they are published.
     </div>
 
     <div class="products" id="products"></div>
@@ -330,21 +331,40 @@ footer a { color: white; }
 </aside>
 
 <script>
-const products = [
- {id:1,title:'Mastering Personal Branding',category:'Ebooks',description:'A practical guide to building a clear, memorable personal brand.',price:1200,style:'',label:'PERSONAL BRANDING'},
- {id:2,title:'AI-Powered Content Solopreneur',category:'Ebooks',description:'Plan and create content systems with AI tools.',price:1500,style:'gold',label:'CONTENT SYSTEMS'},
- {id:3,title:'Micro-SaaS & No-Code Launchpad',category:'Business',description:'Explore ideas and map a no-code product launch.',price:1800,style:'green',label:'BUILD YOUR IDEA'},
- {id:4,title:'Small Business Social Media Kit',category:'Templates',description:'Editable social media planning and design templates.',price:950,style:'plum',label:'SOCIAL MEDIA KIT'},
- {id:5,title:'The Art of Prompt Writing',category:'Ebooks',description:'Learn to write clearer prompts for AI tools.',price:700,style:'plum',label:'PROMPT WRITING'},
- {id:6,title:'Weekly Focus Planner',category:'Planners',description:'A simple weekly planning system.',price:450,style:'green',label:'PLAN WITH PURPOSE'},
- {id:7,title:'Creator Finance Tracker',category:'Spreadsheets',description:'Track income, expenses and project costs.',price:650,style:'green',label:'MONEY TRACKER'},
- {id:8,title:'Small Business Prompt Pack',category:'Prompt Packs',description:'Prompts for product descriptions and content.',price:550,style:'gold',label:'PROMPT COLLECTION'},
- {id:9,title:'Canva Content Calendar',category:'Templates',description:'Plan a month of posts with an editable calendar.',price:500,style:'',label:'CONTENT CALENDAR'},
- {id:10,title:'Start Your Digital Shop',category:'Courses',description:'A short learning resource for planning a digital shop.',price:1100,style:'plum',label:'DIGITAL SHOP STARTER'}
-];
+const db = window.supabase.createClient(
+  "https://pzzrinhxncbnpnbugool.supabase.co",
+  "sb_publishable_14PkcdsbhVWyugftJMJKKw_C4vEmuiz"
+);
 
+let products = [];
 let cart = [];
 let activeFilter = 'All';
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  })[char]);
+}
+
+async function loadProducts() {
+  const container = document.getElementById('products');
+  container.innerHTML = '<p class="description">Loading products...</p>';
+
+  const { data, error } = await db
+    .from('products')
+    .select('id,title,category,description,price,preview_image,published')
+    .eq('published', true)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    container.innerHTML = '<p class="description">The shop is temporarily unavailable. Please try again later.</p>';
+    console.error('Could not load products:', error.message);
+    return;
+  }
+
+  products = data || [];
+  renderProducts();
+}
 const money = amount => 'PKR ' + amount.toLocaleString('en-PK');
 
 function renderProducts() {
@@ -357,19 +377,19 @@ function renderProducts() {
   document.getElementById('products').innerHTML = shown.length
     ? shown.map(p => `
       <article class="product">
-        <div class="cover ${p.style}">
-          <div><small>THE HUSTLE STUDIO</small><strong>${p.label}</strong></div>
-        </div>
+        ${p.preview_image
+          ? `<img src="${escapeHTML(p.preview_image)}" alt="${escapeHTML(p.title)} preview" style="width:100%;height:185px;object-fit:cover">`
+          : `<div class="cover"><div><small>THE HUSTLE STUDIO</small><strong>${escapeHTML(p.category || 'DIGITAL RESOURCE')}</strong></div></div>`}
         <div class="product-info">
-          <h3>${p.title}</h3>
-          <p>${p.description}</p>
+          <h3>${escapeHTML(p.title)}</h3>
+          <p>${escapeHTML(p.description || '')}</p>
           <div class="product-bottom">
-            <strong>${money(p.price)}</strong>
-            <button class="add" onclick="addToCart(${p.id})">Add to bag +</button>
+            <strong>${money(Number(p.price) || 0)}</strong>
+            <button class="add" onclick="addToCart('${p.id}')">Add to bag +</button>
           </div>
         </div>
       </article>`).join('')
-    : '<p class="description">No products found. Try another search.</p>';
+    : '<p class="description">No published products yet. Please check back soon.</p>';
 }
 
 document.getElementById('filters').addEventListener('click', event => {
@@ -443,7 +463,7 @@ function demoCheckout() {
   alert('Checkout is not connected yet. No payments can be made on this preview.');
 }
 
-renderProducts();
+loadProducts();
 renderCart();
 </script>
 </body>
