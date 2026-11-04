@@ -23,6 +23,42 @@ button.danger{background:#9d3030}
 .product img{width:75px;height:75px;object-fit:cover;border-radius:7px}
 .small{font-size:13px;color:#765e65}
 #message{padding:12px;color:#6b1f2e}
+  /* Store management workspace */
+main{max-width:1500px}
+.workspace{
+  display:grid;
+  grid-template-columns:minmax(340px,1fr) minmax(400px,1.1fr);
+  gap:22px;
+  align-items:start;
+}
+.manager{min-width:0}
+.preview-panel{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 3px 15px #0000000c;
+  position:sticky;
+  top:15px;
+}
+.preview-frame{
+  width:100%;
+  height:750px;
+  border:1px solid #ddc6cb;
+  border-radius:8px;
+  background:white;
+}
+.preview-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+@media(max-width:850px){
+  .workspace{grid-template-columns:1fr}
+  .preview-panel{position:static}
+  .preview-frame{height:650px}
+}
 </style>
 </head>
 <body>
@@ -44,8 +80,12 @@ button.danger{background:#9d3030}
   </div>
 
   <div id="dashboard" class="hidden">
-    <h1>Store Dashboard</h1>
-    <p>Manage your digital products here.</p>
+<h1>Store Management</h1>
+<p>Manage your products and preview your storefront in one place.</p>
+
+<div class="workspace">
+
+  <div class="manager">
 
     <div class="panel">
       <h2 id="formTitle">Add a Product</h2>
@@ -82,7 +122,7 @@ button.danger{background:#9d3030}
       <br>
       <button id="saveBtn">Save Product</button>
       <button id="cancelBtn" class="secondary hidden">Cancel Edit</button>
-      <p class="small">PDF files are stored in a private bucket. Preview images are public.</p>
+      <p class="small">PDF files are stored privately. Preview images are public.</p>
     </div>
 
     <div class="panel">
@@ -95,7 +135,25 @@ button.danger{background:#9d3030}
       <div id="orders">Loading orders...</div>
       <p class="small">Orders will appear here once checkout is connected.</p>
     </div>
+
   </div>
+
+  <div class="preview-panel">
+    <div class="preview-heading">
+      <h2>Live Store Preview</h2>
+      <button onclick="document.getElementById('storeFrame').src='https://rabbiasalman78-byte.github.io/-the-hustle-studio/'">Refresh</button>
+    </div>
+
+    <iframe
+      id="storeFrame"
+      class="preview-frame"
+      src="https://rabbiasalman78-byte.github.io/-the-hustle-studio/"
+      title="The Hustle Studio Store Preview">
+    </iframe>
+  </div>
+
+</div>
+
 
   <p id="message"></p>
 </main>
