@@ -1,0 +1,19 @@
+{
+  "id": "./admin.html",
+  "name": "The Hustle Studio Store Builder",
+  "short_name": "Hustle Studio",
+  "description": "Manage and design The Hustle Studio online store.",
+  "start_url": "./admin.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF8F6",
+  "theme_color": "#4A0715",
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
