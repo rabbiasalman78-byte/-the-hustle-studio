@@ -1,6 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<rect width="512" height="512" rx="112" fill="#4A0715"/>
-<rect x="38" y="38" width="436" height="436" rx="88" fill="none" stroke="#F3DDE1" stroke-width="8"/>
-<path d="M150 150h212M150 205h212M150 260h140" stroke="#F3DDE1" stroke-width="18" stroke-linecap="round"/>
-<text x="256" y="375" text-anchor="middle" font-family="Georgia,serif" font-size="92" font-weight="bold" fill="#FFF8F6">HS</text>
+<defs>
+ <linearGradient id="wine" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6B1F32"/><stop offset="1" stop-color="#310713"/></linearGradient>
+ <linearGradient id="rose" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FBECEF"/><stop offset="1" stop-color="#D99AA8"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#wine)"/>
+<rect x="28" y="28" width="456" height="456" rx="92" fill="none" stroke="#E9BFC8" stroke-width="5"/>
+<path d="M126 134h260v24H126z" fill="#E9BFC8" opacity=".75"/>
+<path d="M153 194h64v184h-64zM295 194h64v184h-64zM217 252h78v57h-78z" fill="url(#rose)"/>
+<path d="M217 194h78v58h-78z" fill="#F7DCE2"/>
+<circle cx="386" cy="116" r="22" fill="#F7DCE2"/>
+<path d="M386 79v74M349 116h74" stroke="#F7DCE2" stroke-width="7" stroke-linecap="round"/>
+<text x="256" y="438" text-anchor="middle" font-family="Georgia,serif" font-size="35" letter-spacing="5" fill="#FFF8F6">HUSTLE</text>
 </svg>
