@@ -4,6 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4A0715">
+<link rel="manifest" href="./manifest.webmanifest">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>The Hustle Studio</title>
 <style>
@@ -244,8 +246,8 @@ footer a { color: white; }
 <body>
 <header>
   <div>
-    <div class="brand">THE HUSTLE STUDIO</div>
-    <small>DIGITAL GOODS FOR BIG IDEAS</small>
+    <div class="brand" data-edit-key="storeName">THE HUSTLE STUDIO</div>
+    <small data-edit-key="tagline">DIGITAL GOODS FOR BIG IDEAS</small>
   </div>
   <nav>
     <button onclick="document.getElementById('shop').scrollIntoView()">Shop</button>
@@ -255,16 +257,16 @@ footer a { color: white; }
 
 <main>
   <section class="hero">
-    <div class="eyebrow">IDEAS DESERVE GOOD TOOLS</div>
-    <h1>Make room for your next big idea.</h1>
-    <p>Practical digital guides, thoughtful templates and creative resources to help you learn, plan and build with confidence.</p>
-    <button class="primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Explore the collection →</button>
+    <div class="eyebrow" data-edit-key="heroEyebrow">IDEAS DESERVE GOOD TOOLS</div>
+    <h1 data-edit-key="heroTitle">Make room for your next big idea.</h1>
+    <p data-edit-key="heroDescription">Practical digital guides, thoughtful templates and creative resources to help you learn, plan and build with confidence.</p>
+    <button class="primary" data-edit-key="heroButton" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Explore the collection →</button>
   </section>
 
   <section id="shop">
     <div class="eyebrow">THE DIGITAL SHOP</div>
-    <h2 class="section-title">Find your next tool.</h2>
-    <p class="description">A growing collection for creators, learners and small businesses.</p>
+    <h2 class="section-title" data-edit-key="shopTitle">Find your next tool.</h2>
+    <p class="description" data-edit-key="shopDescription">A growing collection for creators, learners and small businesses.</p>
 
     <div class="filters" id="filters">
       <button class="filter active" data-filter="All">All</button>
@@ -288,8 +290,8 @@ footer a { color: white; }
 
   <section class="about" id="about">
     <div class="eyebrow">OUR STORY</div>
-    <h2 class="section-title">Built for people who turn ideas into action.</h2>
-    <p class="description">The Hustle Studio brings useful digital resources together in one place. Explore at your own pace, choose what helps, and keep creating.</p>
+    <h2 class="section-title" data-edit-key="aboutTitle">Built for people who turn ideas into action.</h2>
+    <p class="description" data-edit-key="aboutDescription">The Hustle Studio brings useful digital resources together in one place. Explore at your own pace, choose what helps, and keep creating.</p>
     <div class="about-box">
       <strong>Our promise</strong><br>
       Clear resources. Useful design. No unnecessary complexity.
@@ -311,7 +313,7 @@ footer a { color: white; }
 </main>
 
 <footer>
-  <div><strong class="brand">THE HUSTLE STUDIO</strong><p>Build. Create. Grow.</p></div>
+  <div><strong class="brand" data-edit-key="storeName">THE HUSTLE STUDIO</strong><p data-edit-key="footerText">Build. Create. Grow.</p></div>
   <div><a href="#shop">Shop</a> · <a href="#about">Our story</a></div>
   <p class="small-note">Preview storefront. Payments and automatic downloads are not active yet.</p>
 </footer>
@@ -331,6 +333,26 @@ footer a { color: white; }
 </aside>
 
 <script>
+const isEditorPreview = new URLSearchParams(location.search).get("editor") === "1";
+const editorStyle = document.createElement("style"); document.head.appendChild(editorStyle);
+const editableKeys = ["storeName","tagline","heroEyebrow","heroTitle","heroDescription","heroButton","shopTitle","shopDescription","aboutTitle","aboutDescription","footerText"];
+function applyStoreSettings(s) {
+  if (!s) return;
+  const root = document.documentElement;
+  if (s.primaryColor) root.style.setProperty("--burgundy",s.primaryColor);
+  if (s.accentColor) root.style.setProperty("--accent",s.accentColor);
+  if (s.backgroundColor) root.style.setProperty("--background",s.backgroundColor);
+  if (s.textColor) root.style.setProperty("--text",s.textColor);
+  if (s.fontFamily) document.body.style.fontFamily=s.fontFamily;
+  if (s.storeName) document.querySelectorAll('[data-edit-key="storeName"]').forEach(el=>el.textContent=s.storeName);
+  editableKeys.forEach(key=>{if(key==="storeName"||s[key]===undefined)return;document.querySelectorAll('[data-edit-key="'+key+'"]').forEach(el=>el.textContent=s[key]);});
+  const hero=s.heroImage ? 'linear-gradient(#26030b66,#26030b66),url("'+s.heroImage+'")' : 'linear-gradient(120deg,'+(s.primaryColor||"#4A0715")+","+(s.accentColor||"#8F1D35")+")";
+  editorStyle.textContent="body{background-color:"+(s.backgroundColor||"#FFF8F6")+";color:"+(s.textColor||"#32121B")+"}header,.hero{background-color:"+(s.primaryColor||"#4A0715")+"}.hero{background-image:"+hero+";background-size:cover;background-position:center}"+(s.pageBackgroundImage?"main{background-image:linear-gradient(#fff8f6cc,#fff8f6cc),url(\""+s.pageBackgroundImage+"\");background-size:cover;background-attachment:fixed}":"")+".primary,.add,.checkout{background:"+(s.accentColor||"#8F1D35")+"}h1,h2,h3,.brand{font-family:"+(s.fontFamily||"Georgia,serif")+"}";
+}
+window.addEventListener("message",event=>{if(event.source!==parent||!event.data)return;if(event.data.type==="HUSTLE_PREVIEW_SETTINGS")applyStoreSettings(event.data.settings);});
+if(isEditorPreview){document.addEventListener("click",event=>{const el=event.target.closest("[data-edit-key]");if(!el)return;event.preventDefault();event.stopPropagation();parent.postMessage({type:"HUSTLE_SELECT",key:el.dataset.editKey},"*");},true);document.querySelectorAll("[data-edit-key]").forEach(el=>{el.style.outline="1px dashed #b65c70";el.style.outlineOffset="3px";el.style.cursor="pointer";});}
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+
 const db = window.supabase.createClient(
   "https://pzzrinhxncbnpnbugool.supabase.co",
   "sb_publishable_14PkcdsbhVWyugftJMJKKw_C4vEmuiz"
