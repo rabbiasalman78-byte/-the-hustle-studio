@@ -1,9 +1,9 @@
 {
-  "id": "./admin.html",
-  "name": "The Hustle Studio Store Builder",
+  "id": "./",
+  "name": "The Hustle Studio",
   "short_name": "Hustle Studio",
-  "description": "Manage and design The Hustle Studio online store.",
-  "start_url": "./admin.html",
+  "description": "Explore digital guides, templates and creative resources from The Hustle Studio.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#FFF8F6",
