@@ -1,383 +1,83 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Hustle Studio | Admin</title>
+<meta name="theme-color" content="#4A0715">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>The Hustle Studio — Store Builder</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#faf3f3;color:#39242b;font-family:Arial,sans-serif}
-header{background:#6b1f2e;color:white;padding:22px 7%;display:flex;justify-content:space-between;align-items:center}
-main{max-width:1000px;margin:35px auto;padding:20px}
-h1,h2{color:#6b1f2e}
-.panel{background:white;padding:24px;border-radius:12px;margin:20px 0;box-shadow:0 3px 15px #0000000c}
-input,textarea,select{width:100%;padding:12px;margin:7px 0 15px;border:1px solid #ddc6cb;border-radius:7px;font:inherit}
-textarea{min-height:90px}
-button{background:#6b1f2e;color:white;border:0;padding:12px 18px;border-radius:7px;cursor:pointer;margin:5px 4px 5px 0}
-button.secondary{background:#c9808a}
-button.danger{background:#9d3030}
-.hidden{display:none}
-.product{border-bottom:1px solid #eee;padding:15px 0;display:flex;gap:15px;align-items:center;flex-wrap:wrap}
-.product img{width:75px;height:75px;object-fit:cover;border-radius:7px}
-.small{font-size:13px;color:#765e65}
-#message{padding:12px;color:#6b1f2e}
-  /* Store management workspace */
-main{max-width:1500px}
-.workspace{
-  display:grid;
-  grid-template-columns:minmax(340px,1fr) minmax(400px,1.1fr);
-  gap:22px;
-  align-items:start;
-}
-.manager{min-width:0}
-.preview-panel{
-  background:white;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 3px 15px #0000000c;
-  position:sticky;
-  top:15px;
-}
-.preview-frame{
-  width:100%;
-  height:750px;
-  border:1px solid #ddc6cb;
-  border-radius:8px;
-  background:white;
-}
-.preview-heading{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-@media(max-width:850px){
-  .workspace{grid-template-columns:1fr}
-  .preview-panel{position:static}
-  .preview-frame{height:650px}
-}
+:root{--wine:#4A0715;--cherry:#6B1025;--red:#8F1D35;--blush:#F3DDE1;--paper:#FFF8F6;--ink:#32121B;--muted:#85656e;--line:#ead8dc}
+*{box-sizing:border-box}body{margin:0;background:#f7f1f2;color:var(--ink);font-family:Inter,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:wait}
+.hidden{display:none!important}.topbar{height:68px;background:var(--wine);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}.brand{font-family:Georgia,serif;letter-spacing:1.5px;font-weight:bold}.top-actions{display:flex;gap:9px;align-items:center}.top-actions button,.top-actions a{border:1px solid #ffffff55;background:transparent;color:white;text-decoration:none;border-radius:9px;padding:9px 13px}
+.login-wrap{max-width:420px;margin:9vh auto;padding:20px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 6px 24px #3b0b1710}.card h2,.card h3{margin-top:0}.field{display:block;margin:13px 0}.field span{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field textarea,.field select{width:100%;padding:11px 12px;border:1px solid #ddc6cb;border-radius:9px;background:white;color:var(--ink)}.field textarea{min-height:88px;resize:vertical}.field input[type=color]{height:44px;padding:4px}.field input[type=file]{padding:8px}.field input[type=checkbox]{width:auto}.btn{border:0;border-radius:9px;padding:11px 15px;background:var(--red);color:white;font-weight:700}.btn.light{background:var(--blush);color:var(--wine)}.btn.ghost{background:white;color:var(--wine);border:1px solid var(--line)}.btn.danger{background:#9b303b}.muted{color:var(--muted);font-size:13px;line-height:1.55}.status{margin:12px 0;padding:10px 12px;border-radius:9px;background:#f8e9ec;color:var(--wine);font-size:13px}
+.app{display:grid;grid-template-columns:235px minmax(0,1fr);min-height:calc(100vh - 68px)}.sidebar{background:white;border-right:1px solid var(--line);padding:20px 13px;display:flex;flex-direction:column;gap:6px}.side-label{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;color:#9a7c84;font-weight:800;padding:12px 12px 5px}.nav-btn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px;border:0;border-radius:10px;background:transparent;color:#69434d;font-weight:650}.nav-btn.active{background:#f7e8eb;color:var(--wine)}.nav-btn svg{width:19px;height:19px;flex:none}.side-bottom{margin-top:auto}.main{padding:28px;min-width:0;max-width:1500px;width:100%;margin:auto}.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}.page-head h1{font:normal 30px Georgia,serif;color:var(--wine);margin:0 0 7px}.page-head p{margin:0;color:var(--muted);font-size:14px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.stat{padding:20px;background:white;border:1px solid var(--line);border-radius:14px}.stat strong{font:30px Georgia,serif;color:var(--wine);display:block;margin-top:8px}.stat span{font-size:13px;color:var(--muted)}.section-grid{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(420px,1.1fr);gap:18px;align-items:start}.preview-card{padding:14px;background:white;border:1px solid var(--line);border-radius:15px}.preview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}.preview-toolbar strong{font-size:14px}.preview-frame{width:100%;height:690px;border:1px solid var(--line);border-radius:10px;background:white}.preview-frame.mobile{width:390px;max-width:100%;height:700px;display:block;margin:auto}.design-fields{max-height:690px;overflow:auto;padding-right:5px}.color-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.upload-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.product-row{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}.product-row img{width:58px;height:58px;object-fit:cover;border-radius:9px}.product-row .grow{flex:1;min-width:120px}.pill{font-size:11px;padding:4px 8px;border-radius:20px;background:#f6e8eb;color:var(--wine)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.tabs button{border:1px solid var(--line);background:white;border-radius:20px;padding:8px 12px;color:var(--wine)}.tabs button.active{background:var(--wine);color:white}.bottom-nav{display:none}.icon{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.main{padding:18px 14px 90px}.section-grid{grid-template-columns:1fr}.design-fields{max-height:none}.preview-frame{height:620px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:white;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:7px 3px calc(7px + env(safe-area-inset-bottom))}.bottom-nav button{border:0;background:transparent;color:#79545e;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;padding:5px}.bottom-nav button.active{color:var(--red);font-weight:bold}.bottom-nav svg{width:20px;height:20px}.topbar{padding:0 13px}.top-actions button,.top-actions a{padding:8px 9px;font-size:12px}}
+@media(max-width:520px){.grid{grid-template-columns:1fr 1fr;gap:9px}.stat{padding:14px}.stat strong{font-size:24px}.page-head h1{font-size:26px}.preview-frame{height:600px}.preview-frame.mobile{height:680px}.card{padding:16px}.topbar{height:60px}.app{min-height:calc(100vh - 60px)}}
 </style>
 </head>
 <body>
-
-<header>
-  <strong>The Hustle Studio — Admin</strong>
-  <button id="logout" class="hidden">Log out</button>
-</header>
-
-<main>
-  <div id="login" class="panel">
-    <h1>Admin Login</h1>
-    <p>Sign in to manage your store.</p>
-    <label>Email</label>
-    <input id="email" type="email" placeholder="Your admin email">
-    <label>Password</label>
-    <input id="password" type="password" placeholder="Your password">
-    <button id="loginBtn">Sign in</button>
-  </div>
-
-  <div id="dashboard" class="hidden">
-<h1>Store Management</h1>
-<p>Manage your products and preview your storefront in one place.</p>
-
-<div class="workspace">
-
-  <div class="manager">
-
-    <div class="panel">
-      <h2 id="formTitle">Add a Product</h2>
-      <input id="editId" type="hidden">
-
-      <label>Product name</label>
-      <input id="title" placeholder="Example: Mastering Personal Branding">
-
-      <label>Product description</label>
-      <textarea id="description" placeholder="Describe your product"></textarea>
-
-      <label>Price (PKR)</label>
-      <input id="price" type="number" min="0" step="0.01" placeholder="e.g. 500">
-
-      <label>Category</label>
-      <select id="category">
-        <option>Ebooks</option>
-        <option>Templates</option>
-        <option>Business</option>
-        <option>Planners</option>
-        <option>Spreadsheets</option>
-        <option>Prompt Packs</option>
-        <option>Courses</option>
-        <option>Other</option>
-      </select>
-
-      <label>Preview image</label>
-      <input id="preview" type="file" accept="image/*">
-
-      <label>Digital product PDF</label>
-      <input id="file" type="file" accept=".pdf">
-
-      <label><input id="published" type="checkbox" style="width:auto"> Publish product on storefront</label>
-      <br>
-      <button id="saveBtn">Save Product</button>
-      <button id="cancelBtn" class="secondary hidden">Cancel Edit</button>
-      <p class="small">PDF files are stored privately. Preview images are public.</p>
-    </div>
-
-    <div class="panel">
-      <h2>Your Products</h2>
-      <div id="products">Loading products...</div>
-    </div>
-
-    <div class="panel">
-      <h2>Customer Orders</h2>
-      <div id="orders">Loading orders...</div>
-      <p class="small">Orders will appear here once checkout is connected.</p>
-    </div>
-
-  </div>
-
-  <div class="preview-panel">
-    <div class="preview-heading">
-      <h2>Live Store Preview</h2>
-      <button onclick="document.getElementById('storeFrame').src='https://rabbiasalman78-byte.github.io/-the-hustle-studio/'">Refresh</button>
-    </div>
-
-    <iframe
-      id="storeFrame"
-      class="preview-frame"
-      src="https://rabbiasalman78-byte.github.io/-the-hustle-studio/"
-      title="The Hustle Studio Store Preview">
-    </iframe>
-  </div>
-
-</div>
-
-
-  <p id="message"></p>
-</main>
-
+<svg width="0" height="0" style="position:absolute"><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol><symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1.7-3.1 1.7 1.7 0 0 1 1.4-2.6H18a3 3 0 0 0 3-3c0-5.1-4-9.3-9-9.3Z"/><path d="M7.5 10h.01M11 7h.01M15.5 8.5h.01"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zM3 8v9l9 5 9-5V8M12 13v9"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol><symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></symbol><symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.6a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.6-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.6a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.6 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2Z"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol></svg>
+<header class="topbar"><div class="brand">THE HUSTLE STUDIO <span style="font:11px Arial;letter-spacing:1px;opacity:.7"> / BUILDER</span></div><div class="top-actions"><a href="./" target="_blank" rel="noopener">View Store ↗</a><button id="installBtn" class="hidden">Install App</button><button id="logoutBtn" class="hidden">Log out</button></div></header>
+<div id="loginScreen" class="login-wrap"><div class="card"><p class="pill">PRIVATE STORE WORKSPACE</p><h1 style="font:normal 30px Georgia;color:var(--wine)">Welcome back.</h1><p class="muted">Sign in to manage The Hustle Studio.</p><label class="field"><span>Email</span><input id="email" type="email" autocomplete="username" placeholder="Admin email"></label><label class="field"><span>Password</span><input id="password" type="password" autocomplete="current-password" placeholder="Password"></label><button class="btn" id="loginBtn" style="width:100%">Sign in</button><div id="loginMessage" class="status hidden"></div></div></div>
+<div id="appShell" class="app hidden">
+<aside class="sidebar"><div class="side-label">Workspace</div><button class="nav-btn active" data-page="overview"><svg class="icon"><use href="#i-home"/></svg>Overview</button><button class="nav-btn" data-page="design"><svg class="icon"><use href="#i-palette"/></svg>Design Studio</button><button class="nav-btn" data-page="products"><svg class="icon"><use href="#i-box"/></svg>Products</button><button class="nav-btn" data-page="media"><svg class="icon"><use href="#i-image"/></svg>Media Library</button><button class="nav-btn" data-page="orders"><svg class="icon"><use href="#i-bag"/></svg>Orders</button><div class="side-bottom"><button class="nav-btn" data-page="settings"><svg class="icon"><use href="#i-settings"/></svg>Store Settings</button></div></aside>
+<main class="main">
+<section class="page" id="page-overview"><div class="page-head"><div><h1>Good to see you.</h1><p>Your business workspace, all in one place.</p></div><button class="btn" data-goto="design">Customize store</button></div><div class="grid"><div class="stat"><span>Products</span><strong id="statProducts">—</strong><span>In your catalogue</span></div><div class="stat"><span>Published</span><strong id="statPublished">—</strong><span>Visible in your store</span></div><div class="stat"><span>Orders</span><strong id="statOrders">—</strong><span>Recorded orders</span></div></div><div class="card" style="margin-top:16px"><h2>Store at a glance</h2><p class="muted">Edit your storefront visually, add digital products and preview changes before publishing.</p><button class="btn" data-goto="design">Open Design Studio</button> <a class="btn ghost" href="./" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Visit storefront</a></div><div id="globalMessage" class="status hidden"></div></section>
+<section class="page hidden" id="page-design"><div class="page-head"><div><h1>Design Studio</h1><p>Change your store's look. Click a highlighted area in the preview to edit its text.</p></div><button class="btn" id="saveDesignBtn">Save & Publish</button></div><div class="section-grid"><div class="card design-fields"><h2>Customize your storefront</h2><div class="tabs"><button class="active" data-design-tab="content">Content</button><button data-design-tab="style">Colours & fonts</button><button data-design-tab="images">Images</button></div><div id="design-content"><label class="field"><span>Store name</span><input data-setting="storeName"></label><label class="field"><span>Short tagline</span><input data-setting="tagline"></label><label class="field"><span>Hero eyebrow</span><input data-setting="heroEyebrow"></label><label class="field"><span>Main heading</span><textarea data-setting="heroTitle"></textarea></label><label class="field"><span>Hero description</span><textarea data-setting="heroDescription"></textarea></label><label class="field"><span>Hero button text</span><input data-setting="heroButton"></label><label class="field"><span>Shop heading</span><input data-setting="shopTitle"></label><label class="field"><span>Shop description</span><textarea data-setting="shopDescription"></textarea></label><label class="field"><span>About heading</span><input data-setting="aboutTitle"></label><label class="field"><span>About description</span><textarea data-setting="aboutDescription"></textarea></label><label class="field"><span>Footer text</span><input data-setting="footerText"></label></div><div id="design-style" class="hidden"><div class="color-grid"><label class="field"><span>Deep cherry</span><input type="color" data-setting="primaryColor"></label><label class="field"><span>Accent red</span><input type="color" data-setting="accentColor"></label><label class="field"><span>Page background</span><input type="color" data-setting="backgroundColor"></label><label class="field"><span>Text colour</span><input type="color" data-setting="textColor"></label></div><label class="field"><span>Font style</span><select data-setting="fontFamily"><option value="Arial, sans-serif">Clean / modern</option><option value="Georgia, serif">Classic / editorial</option><option value="Trebuchet MS, sans-serif">Soft / rounded</option><option value="Verdana, sans-serif">Simple / readable</option></select></label></div><div id="design-images" class="hidden"><label class="field"><span>Homepage hero wallpaper</span><input id="heroImageFile" type="file" accept="image/*"></label><p class="muted">Choose a background image for the main banner.</p><label class="field"><span>Whole-page wallpaper</span><input id="pageImageFile" type="file" accept="image/*"></label><p class="muted">Optional background image behind the store sections.</p><button class="btn light" id="clearImagesBtn">Remove background images</button></div><p class="muted">Changes appear in the preview as you edit. Save & Publish makes them live for visitors.</p></div><div class="preview-card"><div class="preview-toolbar"><strong><svg class="icon" style="vertical-align:middle"><use href="#i-eye"/></svg> Live store preview</strong><div><button class="btn ghost" id="desktopPreviewBtn">Desktop</button> <button class="btn ghost" id="mobilePreviewBtn">Mobile</button> <button class="btn ghost" id="refreshPreviewBtn">↻</button></div></div><iframe class="preview-frame" id="storePreview" title="Editable storefront preview"></iframe><p class="muted">Tip: click a heading or text area inside the preview to jump to its editing field.</p></div></div></section>
+<section class="page hidden" id="page-products"><div class="page-head"><div><h1>Products</h1><p>Add and manage your digital downloads.</p></div><button class="btn" id="newProductBtn">+ Add product</button></div><div class="section-grid"><div class="card"><h2 id="productFormTitle">Add a product</h2><input id="editId" type="hidden"><label class="field"><span>Product title</span><input id="productTitle" placeholder="Product name"></label><label class="field"><span>Description</span><textarea id="productDescription" placeholder="What will customers receive?"></textarea></label><label class="field"><span>Price (PKR)</span><input id="productPrice" type="number" min="0" step="1" placeholder="500"></label><label class="field"><span>Category</span><select id="productCategory"><option>Ebooks</option><option>Templates</option><option>Business</option><option>Planners</option><option>Spreadsheets</option><option>Prompt Packs</option><option>Courses</option><option>Other</option></select></label><label class="field"><span>Preview image</span><input id="productPreview" type="file" accept="image/*"></label><label class="field"><span>Digital PDF</span><input id="productPdf" type="file" accept="application/pdf"></label><label class="field"><span><input id="productPublished" type="checkbox"> Publish product in your store</span></label><button class="btn" id="saveProductBtn">Save product</button> <button class="btn ghost" id="cancelProductBtn">Clear</button><p class="muted">PDFs remain in the private storage bucket. Preview images are public.</p></div><div class="card"><h2>Your catalogue</h2><div id="productList">Loading products…</div></div></div></section>
+<section class="page hidden" id="page-media"><div class="page-head"><div><h1>Media Library</h1><p>Images currently used by your products and store design.</p></div></div><div class="card"><div id="mediaList" class="muted">Loading media…</div></div></section>
+<section class="page hidden" id="page-orders"><div class="page-head"><div><h1>Orders</h1><p>Review orders recorded in your store database.</p></div></div><div class="card"><div id="orderList">Loading orders…</div><p class="muted">Your storefront checkout is still a preview. Real payments and automatic PDF delivery are not active yet.</p></div></section>
+<section class="page hidden" id="page-settings"><div class="page-head"><div><h1>Store Settings</h1><p>Manage your store identity and app installation.</p></div><button class="btn" id="saveSettingsBtn">Save settings</button></div><div class="card" style="max-width:650px"><label class="field"><span>Store name</span><input data-setting="storeName"></label><label class="field"><span>Store tagline</span><input data-setting="tagline"></label><p class="muted">The editor is protected by your admin login. The customer storefront remains public.</p><button class="btn light" id="installHelpBtn">How to install on my phone</button><div id="installHelp" class="status hidden">Open this website in Chrome on your phone, open the browser menu, then choose “Install app” or “Add to Home screen” if offered.</div></div></section>
+</main></div>
+<nav class="bottom-nav"><button class="active" data-page="overview"><svg class="icon"><use href="#i-home"/></svg>Home</button><button data-page="design"><svg class="icon"><use href="#i-palette"/></svg>Design</button><button data-page="products"><svg class="icon"><use href="#i-box"/></svg>Products</button><button data-page="orders"><svg class="icon"><use href="#i-bag"/></svg>Orders</button><button data-page="settings"><svg class="icon"><use href="#i-settings"/></svg>Settings</button></nav>
 <script>
-const SUPABASE_URL = "https://pzzrinhxncbnpnbugool.supabase.co";
-const SUPABASE_KEY = "sb_publishable_14PkcdsbhVWyugftJMJKKw_C4vEmuiz";
-
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const $ = id => document.getElementById(id);
-const message = text => $("message").textContent = text;
-
-let currentProducts = [];
-
-function safe(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[c]);
-}
-
-async function checkAdmin() {
-  const { data: { session } } = await db.auth.getSession();
-
-  if (!session) {
-    $("login").classList.remove("hidden");
-    $("dashboard").classList.add("hidden");
-    $("logout").classList.add("hidden");
-    return;
-  }
-
-  const { data, error } = await db.rpc("is_store_admin");
-
-  if (error || data !== true) {
-    await db.auth.signOut();
-    message("This account does not have store administrator access.");
-    return;
-  }
-
-  $("login").classList.add("hidden");
-  $("dashboard").classList.remove("hidden");
-  $("logout").classList.remove("hidden");
-  message("Welcome to your store dashboard.");
-  loadProducts();
-  loadOrders();
-}
-
-$("loginBtn").onclick = async () => {
-  message("Signing in...");
-  const { error } = await db.auth.signInWithPassword({
-    email: $("email").value.trim(),
-    password: $("password").value
-  });
-  if (error) return message(error.message);
-  await checkAdmin();
-};
-
-$("logout").onclick = async () => {
-  await db.auth.signOut();
-  location.reload();
-};
-
-async function uploadFile(file, bucket) {
-  const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const path = Date.now() + "-" + crypto.randomUUID() + "-" + cleanName;
-
-  const { error } = await db.storage.from(bucket).upload(path, file);
-  if (error) throw error;
-
-  return path;
-}
-
-$("saveBtn").onclick = async () => {
-  try {
-    const title = $("title").value.trim();
-    const price = Number($("price").value);
-
-    if (!title || $("price").value === "" || !Number.isFinite(price) || price < 0) {
-      return message("Enter a product name and a valid price.");
-    }
-
-    $("saveBtn").disabled = true;
-    message("Saving product...");
-
-    const editId = $("editId").value;
-    let previewImage = currentProducts.find(p => p.id === editId)?.preview_image || null;
-    let filePath = currentProducts.find(p => p.id === editId)?.file_path || null;
-
-    const previewFile = $("preview").files[0];
-    const pdfFile = $("file").files[0];
-
-    if (previewFile) {
-      previewImage = await uploadFile(previewFile, "product-previews");
-      previewImage = db.storage.from("product-previews").getPublicUrl(previewImage).data.publicUrl;
-    }
-
-    if (pdfFile) {
-      if (pdfFile.type !== "application/pdf") throw new Error("Please upload a PDF file.");
-      filePath = await uploadFile(pdfFile, "digital-products");
-    }
-
-    const slug = title.toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "") + "-" + (editId || crypto.randomUUID().slice(0,8));
-
-    const product = {
-      title,
-      slug,
-      description: $("description").value.trim(),
-      price,
-      currency: "PKR",
-      category: $("category").value,
-      preview_image: previewImage,
-      file_path: filePath,
-      published: $("published").checked
-    };
-
-    let result;
-    if (editId) {
-      result = await db.from("products").update(product).eq("id", editId);
-    } else {
-      result = await db.from("products").insert(product);
-    }
-
-    if (result.error) throw result.error;
-
-    message("Product saved successfully!");
-    resetForm();
-    await loadProducts();
-  } catch (error) {
-    message("Error: " + error.message);
-  } finally {
-    $("saveBtn").disabled = false;
-  }
-};
-
-async function loadProducts() {
-  const { data, error } = await db.from("products").select("*").order("created_at", {ascending:false});
-
-  if (error) {
-    $("products").textContent = error.message;
-    return;
-  }
-
-  currentProducts = data || [];
-
-  if (!currentProducts.length) {
-    $("products").textContent = "No products yet. Add your first product above!";
-    return;
-  }
-
-  $("products").innerHTML = currentProducts.map(p => `
-    <div class="product">
-      ${p.preview_image ? `<img src="${safe(p.preview_image)}" alt="">` : ""}
-      <div style="flex:1;min-width:150px">
-        <strong>${safe(p.title)}</strong>
-        <div class="small">${safe(p.category)} · PKR ${safe(p.price)} · ${p.published ? "Published" : "Draft"}</div>
-      </div>
-      <button class="secondary" onclick="editProduct('${p.id}')">Edit</button>
-      <button class="danger" onclick="deleteProduct('${p.id}')">Delete</button>
-    </div>
-  `).join("");
-}
-
-window.editProduct = id => {
-  const p = currentProducts.find(item => item.id === id);
-  if (!p) return;
-
-  $("editId").value = p.id;
-  $("title").value = p.title;
-  $("description").value = p.description || "";
-  $("price").value = p.price;
-  $("category").value = p.category || "Other";
-  $("published").checked = p.published;
-  $("formTitle").textContent = "Edit Product";
-  $("saveBtn").textContent = "Update Product";
-  $("cancelBtn").classList.remove("hidden");
-  window.scrollTo({top:0,behavior:"smooth"});
-};
-
-window.deleteProduct = async id => {
-  if (!confirm("Delete this product from your store?")) return;
-
-  const { error } = await db.from("products").delete().eq("id", id);
-  if (error) return message(error.message);
-
-  message("Product deleted.");
-  await loadProducts();
-};
-
-function resetForm() {
-  ["editId","title","description","price"].forEach(id => $(id).value = "");
-  $("preview").value = "";
-  $("file").value = "";
-  $("published").checked = false;
-  $("formTitle").textContent = "Add a Product";
-  $("saveBtn").textContent = "Save Product";
-  $("cancelBtn").classList.add("hidden");
-}
-
-$("cancelBtn").onclick = resetForm;
-
-async function loadOrders() {
-  const { data, error } = await db.from("orders").select("*").order("created_at", {ascending:false});
-  if (error) {
-    $("orders").textContent = error.message;
-    return;
-  }
-
-  if (!data.length) {
-    $("orders").textContent = "No orders yet.";
-    return;
-  }
-
-  $("orders").innerHTML = data.map(o => `
-    <div class="product">
-      <div>
-        <strong>${safe(o.customer_name || "Customer")}</strong>
-        <div class="small">${safe(o.customer_email || "")} · PKR ${safe(o.total_amount)} · ${safe(o.status)}</div>
-      </div>
-    </div>
-  `).join("");
-}
-
+const SUPABASE_URL="https://pzzrinhxncbnpnbugool.supabase.co";
+const SUPABASE_KEY="sb_publishable_14PkcdsbhVWyugftJMJKKw_C4vEmuiz";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+const defaults={storeName:"THE HUSTLE STUDIO",tagline:"DIGITAL GOODS FOR BIG IDEAS",heroEyebrow:"IDEAS DESERVE GOOD TOOLS",heroTitle:"Make room for your next big idea.",heroDescription:"Practical digital guides, thoughtful templates and creative resources to help you learn, plan and build with confidence.",heroButton:"Explore the collection →",shopTitle:"Find your next tool.",shopDescription:"A growing collection for creators, learners and small businesses.",aboutTitle:"Built for people who turn ideas into action.",aboutDescription:"The Hustle Studio brings useful digital resources together in one place. Explore at your own pace, choose what helps, and keep creating.",footerText:"Build. Create. Grow.",primaryColor:"#4A0715",accentColor:"#8F1D35",backgroundColor:"#FFF8F6",textColor:"#32121B",fontFamily:"Arial, sans-serif",heroImage:"",pageBackgroundImage:""};
+let settings=Object.assign({},defaults),products=[],installPrompt=null,selectedKey=null;
+function say(text){$("globalMessage").textContent=text;$("globalMessage").classList.remove("hidden");}
+function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function go(page){document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));$("page-"+page).classList.remove("hidden");document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));if(page==="design")sendPreview();}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.goto)));
+document.querySelectorAll("[data-design-tab]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-design-tab]").forEach(x=>x.classList.toggle("active",x===b));["content","style","images"].forEach(t=>$("design-"+t).classList.toggle("hidden",t!==b.dataset.designTab));}));
+async function checkAdmin(){const s=await db.auth.getSession();if(!s.data.session){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");return;}const a=await db.rpc("is_store_admin");if(a.error||a.data!==true){await db.auth.signOut();$("loginMessage").textContent="This account does not have store administrator access.";$("loginMessage").classList.remove("hidden");return;}$("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");await Promise.all([loadSettings(),loadProducts(),loadOrders()]);$("storePreview").src="./?editor=1";}
+$("loginBtn").onclick=async()=>{const r=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(r.error){$("loginMessage").textContent=r.error.message;$("loginMessage").classList.remove("hidden");return;}checkAdmin();};
+$("logoutBtn").onclick=async()=>{await db.auth.signOut();location.reload();};
+async function loadSettings(){const r=await db.from("store_settings").select("settings").eq("id",1).maybeSingle();if(r.error){say("Run the one-time store settings SQL setup before saving design changes.");return;}settings=Object.assign({},defaults,(r.data&&r.data.settings)||{});fillSettings();sendPreview();}
+function fillSettings(){document.querySelectorAll("[data-setting]").forEach(el=>{const k=el.dataset.setting;if(settings[k]!==undefined)el.value=settings[k];});}
+function sendPreview(){const f=$("storePreview");if(f&&f.contentWindow)f.contentWindow.postMessage({type:"HUSTLE_PREVIEW_SETTINGS",settings:settings},"*");}
+document.querySelectorAll("[data-setting]").forEach(el=>el.addEventListener("input",()=>{settings[el.dataset.setting]=el.value;sendPreview();}));
+async function upload(file){const clean=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const path=Date.now()+"-"+crypto.randomUUID()+"-"+clean;const r=await db.storage.from("product-previews").upload(path,file);if(r.error)throw r.error;return db.storage.from("product-previews").getPublicUrl(path).data.publicUrl;}
+$("heroImageFile").onchange=async e=>{try{if(e.target.files[0]){settings.heroImage=await upload(e.target.files[0]);sendPreview();say("Hero wallpaper uploaded. Save & Publish to make it live.");}}catch(err){say("Upload failed: "+err.message);}};
+$("pageImageFile").onchange=async e=>{try{if(e.target.files[0]){settings.pageBackgroundImage=await upload(e.target.files[0]);sendPreview();say("Page wallpaper uploaded. Save & Publish to make it live.");}}catch(err){say("Upload failed: "+err.message);}};
+$("clearImagesBtn").onclick=()=>{settings.heroImage="";settings.pageBackgroundImage="";sendPreview();};
+async function saveSettings(){const r=await db.from("store_settings").upsert({id:1,settings:settings,updated_at:new Date().toISOString()},{onConflict:"id"});if(r.error){say("Could not save design: "+r.error.message);return;}say("Your store design has been saved and published.");}
+$("saveDesignBtn").onclick=saveSettings;$("saveSettingsBtn").onclick=saveSettings;
+window.addEventListener("message",e=>{if(e.source!==$("storePreview").contentWindow||!e.data||e.data.type!=="HUSTLE_SELECT")return;selectedKey=e.data.key;go("design");const field=document.querySelector('[data-setting="'+selectedKey+'"]');if(field){const tab=field.closest("#design-style")?"style":"content";document.querySelector('[data-design-tab="'+tab+'"]').click();field.focus();field.scrollIntoView({behavior:"smooth",block:"center"});}});
+$("storePreview").onload=sendPreview;
+$("desktopPreviewBtn").onclick=()=>$("storePreview").classList.remove("mobile");
+$("mobilePreviewBtn").onclick=()=>$("storePreview").classList.add("mobile");
+$("refreshPreviewBtn").onclick=()=>{$("storePreview").contentWindow.location.reload();};
+async function uploadProductFile(file,bucket){const clean=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const path=Date.now()+"-"+crypto.randomUUID()+"-"+clean;const r=await db.storage.from(bucket).upload(path,file);if(r.error)throw r.error;return path;}
+async function loadProducts(){const r=await db.from("products").select("*").order("created_at",{ascending:false});if(r.error){$("productList").textContent=r.error.message;return;}products=r.data||[];$("statProducts").textContent=products.length;$("statPublished").textContent=products.filter(p=>p.published).length;renderProducts();renderMedia();}
+function renderProducts(){if(!products.length){$("productList").innerHTML='<p class="muted">No products yet. Add your first product.</p>';return;}$("productList").innerHTML=products.map(p=>'<div class="product-row">'+(p.preview_image?'<img src="'+safe(p.preview_image)+'" alt="">':'<div class="pill">PDF</div>')+'<div class="grow"><strong>'+safe(p.title)+'</strong><div class="muted">'+safe(p.category)+' · PKR '+safe(p.price)+'</div></div><span class="pill">'+(p.published?"Live":"Draft")+'</span><button class="btn ghost" data-edit-product="'+safe(p.id)+'">Edit</button><button class="btn danger" data-delete-product="'+safe(p.id)+'">×</button></div>').join("");document.querySelectorAll("[data-edit-product]").forEach(b=>b.onclick=()=>editProduct(b.dataset.editProduct));document.querySelectorAll("[data-delete-product]").forEach(b=>b.onclick=()=>deleteProduct(b.dataset.deleteProduct));}
+function resetProduct(){$("editId").value="";$("productTitle").value="";$("productDescription").value="";$("productPrice").value="";$("productCategory").value="Ebooks";$("productPreview").value="";$("productPdf").value="";$("productPublished").checked=false;$("productFormTitle").textContent="Add a product";$("saveProductBtn").textContent="Save product";}
+$("newProductBtn").onclick=()=>{resetProduct();$("productTitle").focus();};
+$("cancelProductBtn").onclick=resetProduct;
+function editProduct(id){const p=products.find(x=>String(x.id)===String(id));if(!p)return;$("editId").value=p.id;$("productTitle").value=p.title;$("productDescription").value=p.description||"";$("productPrice").value=p.price;$("productCategory").value=p.category||"Other";$("productPublished").checked=!!p.published;$("productFormTitle").textContent="Edit product";$("saveProductBtn").textContent="Update product";window.scrollTo({top:0,behavior:"smooth"});}
+$("saveProductBtn").onclick=async()=>{try{const title=$("productTitle").value.trim(),price=Number($("productPrice").value);if(!title||$("productPrice").value===""||!Number.isFinite(price)||price<0){say("Enter a product title and a valid price.");return;}const id=$("editId").value,old=products.find(p=>String(p.id)===String(id));let preview=old?old.preview_image:null,filePath=old?old.file_path:null;const img=$("productPreview").files[0],pdf=$("productPdf").files[0];if(img)preview=await uploadProductFile(img,"product-previews").then(path=>db.storage.from("product-previews").getPublicUrl(path).data.publicUrl);if(pdf){if(pdf.type!=="application/pdf")throw new Error("Please choose a PDF file.");filePath=await uploadProductFile(pdf,"digital-products");}const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+(id||crypto.randomUUID().slice(0,8));const product={title:title,slug:slug,description:$("productDescription").value.trim(),price:price,currency:"PKR",category:$("productCategory").value,preview_image:preview,file_path:filePath,published:$("productPublished").checked};const r=id?await db.from("products").update(product).eq("id",id):await db.from("products").insert(product);if(r.error)throw r.error;resetProduct();await loadProducts();say("Product saved.");sendPreview();}catch(err){say("Product could not be saved: "+err.message);}};
+async function deleteProduct(id){if(!confirm("Delete this product from your catalogue?"))return;const r=await db.from("products").delete().eq("id",id);if(r.error){say(r.error.message);return;}await loadProducts();say("Product deleted.");}
+function renderMedia(){const imgs=products.filter(p=>p.preview_image);$("mediaList").innerHTML=imgs.length?imgs.map(p=>'<div class="product-row"><img src="'+safe(p.preview_image)+'" alt=""><div class="grow"><strong>'+safe(p.title)+'</strong><div class="muted">Product preview</div></div></div>').join(""):'<p>No product preview images uploaded yet.</p>';}
+async function loadOrders(){const r=await db.from("orders").select("*").order("created_at",{ascending:false});if(r.error){$("orderList").textContent=r.error.message;return;}const rows=r.data||[];$("statOrders").textContent=rows.length;$("orderList").innerHTML=rows.length?rows.map(o=>'<div class="product-row"><div class="grow"><strong>'+safe(o.customer_name||"Customer")+'</strong><div class="muted">'+safe(o.customer_email||"")+' · PKR '+safe(o.total_amount)+' · '+safe(o.status)+'</div></div></div>').join(""):'<p class="muted">No orders yet. Real checkout is not connected.</p>';}
+$("installHelpBtn").onclick=()=>$("installHelp").classList.toggle("hidden");
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;$("installBtn").classList.remove("hidden");});
+$("installBtn").onclick=async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$("installBtn").classList.add("hidden");};
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 checkAdmin();
 </script>
 </body>
