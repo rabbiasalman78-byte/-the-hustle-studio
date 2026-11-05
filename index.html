@@ -256,6 +256,63 @@ footer a { color: white; }
   .hero { padding: 60px 7%; }
   section { padding: 40px 6%; }
 }
+
+/* THE HUSTLE STUDIO — editorial plum & blush redesign */
+:root{--burgundy:#42162f;--blush:#f5dfe5;--background:#fff9f7;--text:#281322;--plum:#42162f;--rose:#a64f78;--gold:#c99a61;--line:#ead6dc}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{font-family:Arial,sans-serif;background:var(--background);color:var(--text)}
+header{position:sticky;top:0;z-index:30;background:#42162f;padding:13px 6%;box-shadow:0 5px 22px #2b10221c;gap:24px}
+.brand{font-family:Georgia,serif;font-size:23px;letter-spacing:1.2px}
+header small{color:#eac8d5;font-size:10px;letter-spacing:3px}
+nav{align-items:center;gap:9px;flex-wrap:wrap}
+nav button,.account-trigger{border:1px solid #c99a61aa;border-radius:24px;padding:10px 15px;transition:.2s}
+nav button:hover,.account-trigger:hover{background:#f5dfe5;color:#42162f}
+.hero{padding:0 0 0 7%;min-height:420px;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:stretch;background:#f7e5e9;color:#281322;overflow:hidden}
+.hero-copy{padding:65px 34px 48px 0;align-self:center;max-width:650px}
+.hero .eyebrow{color:#9a5574}
+h1{font-family:Georgia,serif;font-size:clamp(42px,5.4vw,72px);line-height:1.02;letter-spacing:-1.8px;max-width:650px;margin:19px 0}
+.hero p{color:#533b49;max-width:510px;font:18px/1.7 Georgia,serif}
+.primary{background:#42162f;color:#fff8f7;padding:15px 25px;border-radius:30px;box-shadow:0 7px 18px #42162f20}
+.primary:hover,.add:hover,.checkout:hover{background:#6c294c;color:white;transform:translateY(-1px)}
+.hero-trust{display:flex;gap:22px;flex-wrap:wrap;margin-top:24px;color:#694456;font-size:12px}
+.hero-media{min-height:420px;background-image:url("./hustle-studio-workspace.jpg");background-size:cover;background-position:center}
+.category-ribbon{margin:0;padding:20px 5%;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;background:#fff9f7;border-bottom:1px solid #f0dfe3}
+.category-ribbon a{display:flex;min-height:76px;flex-direction:column;align-items:center;justify-content:center;text-align:center;text-decoration:none;color:#42162f;border-right:1px solid #d9b9c4;gap:3px}
+.category-ribbon a:last-child{border:0}
+.category-ribbon a span{font-size:24px;color:#8c4568;line-height:1.2}
+.category-ribbon a strong{font:600 13px Georgia,serif}
+.category-ribbon a small{font-size:10px;color:#866c78}
+section{padding:58px 7%}
+#shop{background:#fffaf8}
+.section-title{font-size:clamp(30px,4vw,42px);color:#42162f}
+.description{color:#806b75}
+.filters{gap:9px}
+.filter{border:1px solid #dec8d0;background:#fff;border-radius:24px;color:#563346;padding:10px 16px}
+.filter.active{background:#42162f;color:white;border-color:#42162f}
+#search{max-width:420px;border:1px solid #dec8d0;background:#fff;border-radius:28px;padding:14px 18px;outline:none}
+#search:focus{border-color:#a64f78;box-shadow:0 0 0 3px #a64f7818}
+.notice{background:#f8e5e9;border:1px solid #f0d4dc;color:#66394f;border-radius:14px}
+.products{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.product{border:1px solid #ead9df;border-radius:16px;box-shadow:0 5px 20px #42162f08}
+.product:hover{box-shadow:0 15px 32px #42162f16}
+.product>img,.product .cover{height:220px;min-height:220px;object-fit:cover}
+.cover{background:linear-gradient(145deg,#b56f87,#42162f)}
+.product-info{padding:20px}
+.product-info h3{color:#42162f;font-size:21px}
+.product-info p{color:#806b75}
+.product-bottom strong{color:#42162f}
+.add{background:#42162f;color:white;border-radius:24px;padding:11px 15px;transition:.2s}
+.about{background:#f5dfe5}
+.about-box{background:#fff9f7;border:1px solid #ead1da;border-radius:18px}
+.info-card{border:1px solid #ead9df;border-radius:16px;box-shadow:0 5px 18px #42162f08}
+.info-card h3{color:#42162f}
+footer{background:#2b1022;color:#fff7f7;padding:40px 7%}
+footer a{color:#f6dbe4}
+.checkout{background:#42162f}
+.drawer{z-index:55}.backdrop{z-index:54}
+@media(max-width:900px){.hero{grid-template-columns:1fr 1fr;padding-left:5%}.hero-copy{padding:48px 18px 42px 0}.hero-media{min-height:370px}.category-ribbon{grid-template-columns:repeat(4,1fr);row-gap:8px}.category-ribbon a:nth-child(4){border-right:0}.products{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){header{position:relative;align-items:flex-start;flex-direction:column;padding:14px 5%;gap:12px}nav{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}nav button,.account-trigger{padding:9px 5px;font-size:11px;white-space:nowrap}.brand{font-size:20px}.hero{grid-template-columns:1fr;padding:0}.hero-copy{padding:44px 7% 28px}h1{font-size:clamp(40px,12vw,56px)}.hero p{font-size:16px}.hero-media{min-height:230px;background-position:center 55%}.hero-trust{gap:12px;font-size:11px}.category-ribbon{grid-template-columns:repeat(2,1fr);padding:12px 5%}.category-ribbon a{border-right:1px solid #d9b9c4}.category-ribbon a:nth-child(even){border-right:0}.category-ribbon a:last-child{grid-column:1/-1;border:0}section{padding:42px 6%}.products{grid-template-columns:1fr}.product>img,.product .cover{height:230px}.product-bottom{gap:8px}footer{padding:32px 6%}}
+
 </style>
 </head>
 
@@ -275,12 +332,24 @@ footer a { color: white; }
 
 <main>
   <section class="hero">
-    <div class="eyebrow" data-edit-key="heroEyebrow">IDEAS DESERVE GOOD TOOLS</div>
-    <h1 data-edit-key="heroTitle">Make room for your next big idea.</h1>
-    <p data-edit-key="heroDescription">Practical digital guides, thoughtful templates and creative resources to help you learn, plan and build with confidence.</p>
-    <button class="primary" data-edit-key="heroButton" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Explore the collection →</button>
+    <div class="hero-copy">
+      <div class="eyebrow" data-edit-key="heroEyebrow">DIGITAL PRODUCTS FOR BIG IDEAS</div>
+      <h1 data-edit-key="heroTitle">Your next big idea starts here.</h1>
+      <p data-edit-key="heroDescription">Thoughtful ebooks, templates, planners and creative tools to help you learn, organise and build with confidence.</p>
+      <button class="primary" data-edit-key="heroButton" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Explore the collection <span aria-hidden="true">→</span></button>
+      <div class="hero-trust"><span>✦ Carefully made resources</span><span>♡ Made for curious minds</span></div>
+    </div>
+    <div class="hero-media" role="img" aria-label="A calm creative workspace with a laptop, notebook and flowers"></div>
   </section>
-
+  <div class="category-ribbon" aria-label="Shop categories">
+    <a href="#shop" data-category-shortcut="Ebooks"><span>▤</span><strong>Ebooks</strong><small>Learn something new</small></a>
+    <a href="#shop" data-category-shortcut="Templates"><span>▧</span><strong>Templates</strong><small>Create with ease</small></a>
+    <a href="#shop" data-category-shortcut="Business"><span>◇</span><strong>Business Kits</strong><small>Build your ideas</small></a>
+    <a href="#shop" data-category-shortcut="Planners"><span>▦</span><strong>Planners</strong><small>Plan with purpose</small></a>
+    <a href="#shop" data-category-shortcut="Spreadsheets"><span>▥</span><strong>Spreadsheets</strong><small>Track your progress</small></a>
+    <a href="#shop" data-category-shortcut="Prompt Packs"><span>✧</span><strong>Prompt Packs</strong><small>Work smarter</small></a>
+    <a href="#shop" data-category-shortcut="Courses"><span>⌂</span><strong>Courses</strong><small>Keep growing</small></a>
+  </div>
   <section id="shop">
     <div class="eyebrow">THE DIGITAL SHOP</div>
     <h2 class="section-title" data-edit-key="shopTitle">Find your next tool.</h2>
@@ -360,8 +429,8 @@ const editableKeys = ["storeName","tagline","heroEyebrow","heroTitle","heroDescr
 function applyStoreSettings(s) {
   if (!s) return;
   const root = document.documentElement;
-  if (s.primaryColor) root.style.setProperty("--burgundy",s.primaryColor);
-  if (s.accentColor) root.style.setProperty("--accent",s.accentColor);
+  if (s.primaryColor) { root.style.setProperty("--burgundy",s.primaryColor); root.style.setProperty("--plum",s.primaryColor); }
+  if (s.accentColor) { root.style.setProperty("--accent",s.accentColor); root.style.setProperty("--rose",s.accentColor); }
   if (s.backgroundColor) root.style.setProperty("--background",s.backgroundColor);
   if (s.textColor) root.style.setProperty("--text",s.textColor);
   if (s.fontFamily) document.body.style.fontFamily=s.fontFamily;
@@ -448,6 +517,15 @@ document.getElementById('filters').addEventListener('click', event => {
 });
 
 document.getElementById('search').addEventListener('input', renderProducts);
+
+document.querySelectorAll("[data-category-shortcut]").forEach(link => {
+  link.addEventListener("click", () => {
+    const category = link.dataset.categoryShortcut;
+    const filter = [...document.querySelectorAll("#filters [data-filter]")].find(b => b.dataset.filter === category);
+    if (filter) filter.click();
+  });
+});
+
 
 let activeDetailProductId=null;
 function openProduct(id){const p=products.find(x=>String(x.id)===String(id));if(!p)return;activeDetailProductId=p.id;document.getElementById("detailCategory").textContent=p.category||"DIGITAL RESOURCE";document.getElementById("detailTitle").textContent=p.title;document.getElementById("detailDescription").textContent=p.description||"A practical digital resource from The Hustle Studio.";document.getElementById("detailPrice").textContent=money(Number(p.price)||0);document.getElementById("detailImage").innerHTML=p.preview_image?'<img src="'+escapeHTML(p.preview_image)+'" alt="'+escapeHTML(p.title)+'">':'<div class="cover"><div><small>THE HUSTLE STUDIO</small><strong>'+escapeHTML(p.category||"DIGITAL RESOURCE")+'</strong></div></div>';document.getElementById("detailSampleButton").style.display=p.sample_pdf_url?"inline-block":"none";document.getElementById("detailBackdrop").classList.add("open");document.body.style.overflow="hidden";}
