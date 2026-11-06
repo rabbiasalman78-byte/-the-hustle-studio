@@ -447,7 +447,24 @@ const db = window.supabase.createClient(
   "https://pzzrinhxncbnpnbugool.supabase.co",
   "sb_publishable_14PkcdsbhVWyugftJMJKKw_C4vEmuiz"
 );
-async function loadStoreSettings(){const result=await db.from("store_settings").select("settings").eq("id",1).maybeSingle();if(!result.error&&result.data&&result.data.settings)applyStoreSettings(result.data.settings);}
+async function loadStoreSettings(){
+  const result=await db.from("store_settings").select("settings").eq("id",1).maybeSingle();
+  if(result.error||!result.data||!result.data.settings)return;
+  const saved={...result.data.settings};
+  // Migrate the original red/wine palette to the current plum/blush brand palette.
+  const legacyColours={
+    primaryColor:["#4A0715","#42162f"],
+    accentColor:["#8F1D35","#8c4568"],
+    backgroundColor:["#FFF8F6","#fff9f7"],
+    textColor:["#32121B","#281322"]
+  };
+  for(const [key,values] of Object.entries(legacyColours)){
+    if(typeof saved[key]==="string"&&saved[key].toLowerCase()===values[0].toLowerCase()){
+      saved[key]=values[1];
+    }
+  }
+  applyStoreSettings(saved);
+}
 loadStoreSettings();
 
 let products = [];
