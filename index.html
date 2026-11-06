@@ -431,13 +431,13 @@ function applyStoreSettings(s) {
   const root = document.documentElement;
   if (s.primaryColor) { root.style.setProperty("--burgundy",s.primaryColor); root.style.setProperty("--plum",s.primaryColor); }
   if (s.accentColor) { root.style.setProperty("--accent",s.accentColor); root.style.setProperty("--rose",s.accentColor); }
-  if (s.backgroundColor) root.style.setProperty("--background",s.backgroundColor);
+  // Keep the storefront canvas warm white; saved theme colours must not tint white sections.
   if (s.textColor) root.style.setProperty("--text",s.textColor);
   if (s.fontFamily) document.body.style.fontFamily=s.fontFamily;
   if (s.storeName) document.querySelectorAll('[data-edit-key="storeName"]').forEach(el=>el.textContent=s.storeName);
   editableKeys.forEach(key=>{if(key==="storeName"||s[key]===undefined)return;document.querySelectorAll('[data-edit-key="'+key+'"]').forEach(el=>el.textContent=s[key]);});
   const hero=s.heroImage ? 'linear-gradient(#26030b66,#26030b66),url("'+s.heroImage+'")' : 'linear-gradient(120deg,'+(s.primaryColor||"#4A0715")+","+(s.accentColor||"#8F1D35")+")";
-  editorStyle.textContent="body{background-color:"+(s.backgroundColor||"#FFF8F6")+";color:"+(s.textColor||"#32121B")+"}header,.hero{background-color:"+(s.primaryColor||"#4A0715")+"}.hero{background-image:"+hero+";background-size:cover;background-position:center}"+(s.pageBackgroundImage?"main{background-image:linear-gradient(#fff8f6cc,#fff8f6cc),url(\""+s.pageBackgroundImage+"\");background-size:cover;background-attachment:fixed}":"")+".primary,.add,.checkout{background:"+(s.accentColor||"#8F1D35")+"}h1,h2,h3,.brand{font-family:"+(s.fontFamily||"Georgia,serif")+"}";
+  editorStyle.textContent="body{background-color:#fff9f7!important;color:"+(s.textColor||"#32121B")+"}main{background:#fff9f7!important;background-image:none!important}header,.hero{background-color:"+(s.primaryColor||"#4A0715")+"}.hero{background-image:"+hero+";background-size:cover;background-position:center}.primary,.add,.checkout{background:"+(s.accentColor||"#8F1D35")+"}h1,h2,h3,.brand{font-family:"+(s.fontFamily||"Georgia,serif")+"}";
 }
 window.addEventListener("message",event=>{if(event.source!==parent||!event.data)return;if(event.data.type==="HUSTLE_PREVIEW_SETTINGS")applyStoreSettings(event.data.settings);});
 if(isEditorPreview){document.addEventListener("click",event=>{const el=event.target.closest("[data-edit-key]");if(!el)return;event.preventDefault();event.stopPropagation();parent.postMessage({type:"HUSTLE_SELECT",key:el.dataset.editKey},"*");},true);document.querySelectorAll("[data-edit-key]").forEach(el=>{el.style.outline="1px dashed #b65c70";el.style.outlineOffset="3px";el.style.cursor="pointer";});}
